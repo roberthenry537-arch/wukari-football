@@ -1,0 +1,40 @@
+{% extends 'players/base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-7">
+        <div class="card shadow">
+            <div class="card-body">
+                <h3 class="mb-4">
+                    {% if editing %}
+                        Edit Your Football Profile
+                    {% else %}
+                        Create Your Football Profile
+                    {% endif %}
+                </h3>
+
+                {% if form.errors %}
+                    <div class="alert alert-danger">
+                        <strong>Please correct the errors below:</strong>
+                        {{ form.errors }}
+                    </div>
+                {% endif %}
+
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    
+                    {{ form.as_p }}
+
+                    <button type="submit" class="btn btn-success w-100 mt-3">
+                        {% if editing %}
+                            Save Changes
+                        {% else %}
+                            Create Profile
+                        {% endif %}
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

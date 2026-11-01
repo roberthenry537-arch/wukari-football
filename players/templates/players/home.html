@@ -1,0 +1,21 @@
+{% extends 'players/base.html' %}
+
+{% block content %}
+<h2 class="mb-4">Football Pitches in Wukari</h2>
+
+<div class="row">
+    {% for pitch in pitches %}
+    <div class="col-md-4 mb-3">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title">{{ pitch.name }}</h5>
+                <p class="card-text text-muted">{{ pitch.location }}</p>
+                <a href="{% url 'pitch_detail' pitch.id %}" class="btn btn-success btn-sm">View Players</a>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <p>No pitches added yet. Go to Admin to add some.</p>
+    {% endfor %}
+</div>
+{% endblock %}
