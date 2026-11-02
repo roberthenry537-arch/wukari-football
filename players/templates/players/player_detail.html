@@ -1,56 +1,61 @@
 {% extends 'players/base.html' %}
 
 {% block content %}
-<div class="card shadow">
-    <div class="card-body">
-        <div class="row">
-            <div class="col-md-3 text-center">
-                {% if player.profile_photo %}
-                    <img src="{{ player.profile_photo.url }}" 
-                         class="img-fluid rounded mb-3" 
-                         alt="{{ player.full_name }}"
-                         style="max-height: 280px; object-fit: cover; width: 100%;">
-                {% else %}
-                    <div class="bg-secondary text-white text-center p-5 rounded mb-3">
-                        No Photo
-                    </div>
-                {% endif %}
-            </div>
 
-            <div class="col-md-9">
-                <h2 class="mb-3">{{ player.full_name }}</h2>
+{% if error_message %}
+    <div class="alert alert-danger">
+        <h4>Error loading profile</h4>
+        <p>{{ error_message }}</p>
+    </div>
+{% elif player %}
+    <div class="card shadow">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-3 text-center">
+                    {% if player.profile_photo %}
+                        <img src="{{ player.profile_photo.url }}" 
+                             class="img-fluid rounded mb-3" 
+                             alt="{{ player.full_name }}"
+                             style="max-height: 280px; object-fit: cover; width: 100%;">
+                    {% else %}
+                        <div class="bg-secondary text-white text-center p-5 rounded mb-3">
+                            No Photo
+                        </div>
+                    {% endif %}
+                </div>
 
-                <p><strong>Role:</strong> {{ player.get_role_display }}</p>
-                <p><strong>Position:</strong> {{ player.get_position_display }}</p>
-                <p><strong>Age:</strong> {{ player.age }}</p>
+                <div class="col-md-9">
+                    <h2 class="mb-3">{{ player.full_name }}</h2>
+                    <p><strong>Role:</strong> {{ player.get_role_display }}</p>
+                    <p><strong>Position:</strong> {{ player.get_position_display }}</p>
+                    <p><strong>Age:</strong> {{ player.age }}</p>
+                    <p><strong>Phone:</strong> {{ player.phone_number|default:"—" }}</p>
+                    <p><strong>Religion:</strong> {{ player.religion|default:"—" }}</p>
+                    <p><strong>State of Origin:</strong> {{ player.state_of_origin|default:"—" }}</p>
+                    <p><strong>Preferred Foot:</strong> {{ player.preferred_foot|default:"—" }}</p>
+                    <p><strong>Height:</strong> {{ player.height|default:"—" }}</p>
+                    <p><strong>Current Pitch:</strong> 
+                        {% if player.current_pitch %}
+                            {{ player.current_pitch.name }}
+                        {% else %}
+                            Not set
+                        {% endif %}
+                    </p>
 
-                {% if player.phone_number %}
-                    <p><strong>Phone:</strong> {{ player.phone_number }}</p>
-                {% endif %}
+                    {% if player.role == 'PLAYER' %}
+                        <p><strong>Goals:</strong> {{ player.goals_scored }} | 
+                           <strong>Appearances:</strong> {{ player.appearances }}</p>
+                    {% endif %}
 
-                {% if player.religion %}
-                    <p><strong>Religion:</strong> {{ player.religion }}</p>
-                {% endif %}
-
-                {% if player.state_of_origin %}
-                    <p><strong>State of Origin:</strong> {{ player.state_of_origin }}</p>
-                {% endif %}
-
-                <p><strong>Preferred Foot:</strong> {{ player.preferred_foot|default:"—" }}</p>
-                <p><strong>Height:</strong> {{ player.height|default:"—" }}</p>
-                <p><strong>Current Pitch:</strong> {{ player.current_pitch.name|default:"Not set" }}</p>
-
-                {% if player.role == 'PLAYER' %}
-                    <p><strong>Goals:</strong> {{ player.goals_scored }} | 
-                       <strong>Appearances:</strong> {{ player.appearances }}</p>
-                {% endif %}
-
-                <hr>
-                <p>{{ player.bio|default:"No bio yet." }}</p>
+                    <hr>
+                    <p>{{ player.bio|default:"No bio yet." }}</p>
+                </div>
             </div>
         </div>
     </div>
-</div>
+{% else %}
+    <div class="alert alert-warning">Player not found.</div>
+{% endif %}
 
 <a href="{% url 'home' %}" class="btn btn-secondary mt-3">← Back to Pitches</a>
 {% endblock %}
