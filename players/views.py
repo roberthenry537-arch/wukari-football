@@ -11,8 +11,8 @@ class PlayerProfileForm(forms.ModelForm):
         model = PlayerProfile
         fields = [
             'full_name', 'role', 'age', 'position', 'preferred_foot',
-            'height', 'bio', 'current_pitch', 'goals_scored',
-            'appearances', 'profile_photo'
+            'height', 'phone_number', 'religion', 'state_of_origin',
+            'bio', 'current_pitch', 'goals_scored', 'appearances', 'profile_photo'
         ]
 
 

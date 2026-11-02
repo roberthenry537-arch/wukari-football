@@ -1,6 +1,5 @@
 from django.db import models
 from django.contrib.auth.models import User
-from PIL import Image
 from cloudinary.models import CloudinaryField
 
 class Pitch(models.Model):
@@ -10,6 +9,7 @@ class Pitch(models.Model):
 
     def __str__(self):
         return self.name
+
 
 class PlayerProfile(models.Model):
     ROLE_CHOICES = [
@@ -40,6 +40,9 @@ class PlayerProfile(models.Model):
     position = models.CharField(max_length=3, choices=POSITION_CHOICES, default='N/A')
     preferred_foot = models.CharField(max_length=10, blank=True)
     height = models.CharField(max_length=10, blank=True, help_text="e.g. 1.75m")
+    phone_number = models.CharField(max_length=15, blank=True)
+    religion = models.CharField(max_length=50, blank=True)
+    state_of_origin = models.CharField(max_length=50, blank=True)
     bio = models.TextField(blank=True)
     profile_photo = CloudinaryField('image', blank=True, null=True)
     current_pitch = models.ForeignKey(Pitch, on_delete=models.SET_NULL, null=True, blank=True, related_name='players')
@@ -50,25 +53,7 @@ class PlayerProfile(models.Model):
     def __str__(self):
         return f"{self.full_name} ({self.get_role_display()})"
 
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
 
-        if self.profile_photo:
-            try:
-                from PIL import Image, ImageOps
-                img = Image.open(self.profile_photo.path)
-
-                # This is the modern and more reliable way to fix orientation
-                img = ImageOps.exif_transpose(img)
-
-                # Optional: resize if too large
-                if img.height > 800 or img.width > 800:
-                    img.thumbnail((800, 800))
-
-                # Save the corrected image
-                img.save(self.profile_photo.path)
-            except Exception as e:
-                print("Error processing image:", e)
 class Post(models.Model):
     POST_TYPE_CHOICES = [
         ('PHOTO', 'Photo'),
