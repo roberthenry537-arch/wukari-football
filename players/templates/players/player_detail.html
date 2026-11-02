@@ -6,22 +6,43 @@
         <div class="row">
             <div class="col-md-3 text-center">
                 {% if player.profile_photo %}
-                    <img src="{{ player.profile_photo.url }}" class="img-fluid rounded mb-3" alt="{{ player.full_name }}" style="max-height: 300px; object-fit: cover;">
+                    <img src="{{ player.profile_photo.url }}" 
+                         class="img-fluid rounded mb-3" 
+                         alt="{{ player.full_name }}"
+                         style="max-height: 280px; object-fit: cover; width: 100%;">
                 {% else %}
-                    <div class="bg-secondary text-white text-center p-5 rounded mb-3">No Photo</div>
+                    <div class="bg-secondary text-white text-center p-5 rounded mb-3">
+                        No Photo
+                    </div>
                 {% endif %}
             </div>
+
             <div class="col-md-9">
-                <h2>{{ player.full_name }}</h2>
-                <p class="mb-1"><strong>Role:</strong> {{ player.get_role_display }}</p>
-                <p class="mb-1"><strong>Position:</strong> {{ player.get_position_display }}</p>
-                <p class="mb-1"><strong>Age:</strong> {{ player.age }}</p>
-                <p class="mb-1"><strong>Preferred Foot:</strong> {{ player.preferred_foot|default:"—" }}</p>
-                <p class="mb-1"><strong>Height:</strong> {{ player.height|default:"—" }}</p>
-                <p class="mb-1"><strong>Current Pitch:</strong> {{ player.current_pitch.name|default:"Not set" }}</p>
-                
+                <h2 class="mb-3">{{ player.full_name }}</h2>
+
+                <p><strong>Role:</strong> {{ player.get_role_display }}</p>
+                <p><strong>Position:</strong> {{ player.get_position_display }}</p>
+                <p><strong>Age:</strong> {{ player.age }}</p>
+
+                {% if player.phone_number %}
+                    <p><strong>Phone:</strong> {{ player.phone_number }}</p>
+                {% endif %}
+
+                {% if player.religion %}
+                    <p><strong>Religion:</strong> {{ player.religion }}</p>
+                {% endif %}
+
+                {% if player.state_of_origin %}
+                    <p><strong>State of Origin:</strong> {{ player.state_of_origin }}</p>
+                {% endif %}
+
+                <p><strong>Preferred Foot:</strong> {{ player.preferred_foot|default:"—" }}</p>
+                <p><strong>Height:</strong> {{ player.height|default:"—" }}</p>
+                <p><strong>Current Pitch:</strong> {{ player.current_pitch.name|default:"Not set" }}</p>
+
                 {% if player.role == 'PLAYER' %}
-                    <p class="mb-1"><strong>Goals:</strong> {{ player.goals_scored }} | <strong>Appearances:</strong> {{ player.appearances }}</p>
+                    <p><strong>Goals:</strong> {{ player.goals_scored }} | 
+                       <strong>Appearances:</strong> {{ player.appearances }}</p>
                 {% endif %}
 
                 <hr>
@@ -31,5 +52,5 @@
     </div>
 </div>
 
-<a href="{% url 'home' %}" class="btn btn-secondary mt-3">← Back</a>
+<a href="{% url 'home' %}" class="btn btn-secondary mt-3">← Back to Pitches</a>
 {% endblock %}
