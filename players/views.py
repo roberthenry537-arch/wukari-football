@@ -2,8 +2,6 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.models import User
-from django.http import HttpResponse
 from .models import Pitch, PlayerProfile, Post
 from django import forms
 
@@ -104,13 +102,3 @@ def create_post(request):
         form = PostForm()
 
     return render(request, 'players/create_post.html', {'form': form})
-
-
-def create_admin(request):
-    if User.objects.filter(username='admin').exists():
-        return HttpResponse("Admin already exists.")
-    
-    User.objects.create_superuser(
-        username='admin',
-        email='admin@example.com',
-        password='admin12345'
