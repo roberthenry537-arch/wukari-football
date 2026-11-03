@@ -114,5 +114,3 @@ def create_admin(request):
         username='admin',
         email='admin@example.com',
         password='admin12345'
-    )
-    return HttpResponse("Superuser created successfully!<br>Username: admin<br>Password: admin12345")
