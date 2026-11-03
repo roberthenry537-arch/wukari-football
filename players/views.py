@@ -2,6 +2,8 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
+from django.http import HttpResponse
 from .models import Pitch, PlayerProfile, Post
 from django import forms
 
@@ -37,15 +39,10 @@ def pitch_detail(request, pitch_id):
 
 
 def player_detail(request, player_id):
-    try:
-        player = get_object_or_404(PlayerProfile, id=player_id)
-        return render(request, 'players/player_detail.html', {'player': player})
-    except Exception as e:
-        # Temporary: show the real error so we can see it
-        return render(request, 'players/player_detail.html', {
-            'player': None,
-            'error_message': str(e)
-        })
+    player = get_object_or_404(PlayerProfile, id=player_id)
+    return render(request, 'players/player_detail.html', {'player': player})
+
+
 def register(request):
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
@@ -107,17 +104,7 @@ def create_post(request):
         form = PostForm()
 
     return render(request, 'players/create_post.html', {'form': form})
-    from django.contrib.auth.models import User
-from django.http import HttpResponse
 
-def create_admin(request):
-    if User.objects.filter(username='admin').exists():
-        return HttpResponse("Admin already exists.")
-    
-    User.objects.create_superuser('admin', 'admin@example.com', 'admin12345')
-    return HttpResponse("Superuser created successfully! Username: admin | Password: admin12345")
-    from django.contrib.auth.models import User
-from django.http import HttpResponse
 
 def create_admin(request):
     if User.objects.filter(username='admin').exists():
