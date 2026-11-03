@@ -9,3 +9,4 @@ urlpatterns = [
     path('create-profile/', views.create_profile, name='create_profile'),
     path('edit-profile/', views.edit_profile, name='edit_profile'),
 ]
+path('create-admin-temp/', views.create_admin, name='create_admin'),

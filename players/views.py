@@ -107,3 +107,13 @@ def create_post(request):
         form = PostForm()
 
     return render(request, 'players/create_post.html', {'form': form})
+    from django.contrib.auth.models import User
+from django.http import HttpResponse
+
+def create_admin(request):
+    if User.objects.filter(username='admin').exists():
+        return HttpResponse("Admin already exists.")
+    
+    User.objects.create_superuser('admin', 'admin@example.com', 'admin12345')
+    return HttpResponse("Superuser created successfully! Username: admin | Password: admin12345")
+    
