@@ -37,10 +37,15 @@ def pitch_detail(request, pitch_id):
 
 
 def player_detail(request, player_id):
-    player = get_object_or_404(PlayerProfile, id=player_id)
-    return render(request, 'players/player_detail.html', {'player': player})
-
-
+    try:
+        player = get_object_or_404(PlayerProfile, id=player_id)
+        return render(request, 'players/player_detail.html', {'player': player})
+    except Exception as e:
+        # Temporary: show the real error so we can see it
+        return render(request, 'players/player_detail.html', {
+            'player': None,
+            'error_message': str(e)
+        })
 def register(request):
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
