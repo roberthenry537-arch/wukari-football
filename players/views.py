@@ -42,16 +42,22 @@ def player_detail(request, player_id):
 
 
 def register(request):
+    if request.user.is_authenticated:
+        return redirect('home')
+
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
         if form.is_valid():
             user = form.save()
             login(request, user)
             return redirect('create_profile')
+        else:
+            # Form has errors
+            return render(request, 'players/register.html', {'form': form})
     else:
         form = UserCreationForm()
-    return render(request, 'players/register.html', {'form': form})
 
+    return render(request, 'players/register.html', {'form': form})
 
 @login_required
 def create_profile(request):
