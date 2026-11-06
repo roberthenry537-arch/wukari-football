@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth import login
+from django.contrib.auth import login, logout
 from django.contrib.auth.forms import UserCreationForm
 from .models import Pitch, PlayerProfile, Post
 from django import forms
@@ -51,13 +51,11 @@ def register(request):
             user = form.save()
             login(request, user)
             return redirect('create_profile')
-        else:
-            # Form has errors
-            return render(request, 'players/register.html', {'form': form})
     else:
         form = UserCreationForm()
 
     return render(request, 'players/register.html', {'form': form})
+
 
 @login_required
 def create_profile(request):
@@ -108,8 +106,8 @@ def create_post(request):
         form = PostForm()
 
     return render(request, 'players/create_post.html', {'form': form})
-    from django.contrib.auth import logout
 
-    def logout_view(request):
+
+def logout_view(request):
     logout(request)
-    return redirect ('home')
+    return redirect('home')
