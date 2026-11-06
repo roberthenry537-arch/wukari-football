@@ -110,6 +110,6 @@ def create_post(request):
     return render(request, 'players/create_post.html', {'form': form})
     from django.contrib.auth import logout
 
-    dev logout_view(request):
+    def logout_view(request):
     logout(request)
     return redirect ('home')
