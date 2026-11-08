@@ -1,24 +1,81 @@
 {% extends 'players/base.html' %}
 
 {% block content %}
-<div class="mb-4">
-    <h2 class="fw-bold">{{ pitch.name }}</h2>
-    <p class="text-muted mb-1">{{ pitch.location }}</p>
-    {% if pitch.description %}
-        <p>{{ pitch.description }}</p>
-    {% endif %}
+
+<!-- PITCH INFORMATION -->
+<div class="card shadow-sm border-0 rounded-4 mb-4">
+    <div class="card-body p-4">
+
+        <h2 class="fw-bold mb-2">{{ pitch.name }}</h2>
+
+        <p class="text-muted mb-3">
+            <i class="bi bi-geo-alt-fill text-success"></i>
+            {{ pitch.location }}
+        </p>
+
+        {% if pitch.description %}
+            <p class="mb-3">{{ pitch.description }}</p>
+        {% endif %}
+
+        <hr>
+
+        <!-- ASSIGNED CLUB -->
+        <h5 class="fw-bold mb-3">Football Club</h5>
+
+        {% if pitch.club %}
+            <div class="d-flex align-items-center gap-3 p-3 bg-light rounded-3">
+
+                {% if pitch.club.logo %}
+                    <img src="{{ pitch.club.logo.url }}"
+                         alt="{{ pitch.club.name }}"
+                         class="rounded-circle"
+                         style="width: 75px; height: 75px; object-fit: cover;">
+                {% else %}
+                    <div class="rounded-circle bg-success text-white d-flex align-items-center justify-content-center"
+                         style="width: 75px; height: 75px;">
+                        <i class="bi bi-shield-fill fs-2"></i>
+                    </div>
+                {% endif %}
+
+                <div>
+                    <h5 class="fw-bold mb-1">{{ pitch.club.name }}</h5>
+                    <p class="text-muted mb-0">
+                        {{ pitch.club.location }}
+                    </p>
+                    <span class="badge bg-success mt-2">Assigned Club</span>
+                </div>
+
+                <a href="{% url 'club_detail' pitch.club.id %}"
+                   class="btn btn-outline-success btn-sm ms-auto">
+                    View Club
+                </a>
+            </div>
+        {% else %}
+            <div class="alert alert-warning mb-0">
+                No football club has been assigned to this pitch yet.
+            </div>
+        {% endif %}
+
+    </div>
 </div>
 
-<h4 class="mb-3">Players & Staff</h4>
+
+<!-- PLAYERS AND STAFF -->
+<h4 class="fw-bold mb-3">Players & Staff</h4>
 
 <div class="row">
+
     {% for player in players %}
+
     <div class="col-md-4 mb-4">
+
         <div class="card h-100 shadow-sm border-0">
+
             <div class="card-body text-center">
+
                 {% if player.profile_photo %}
-                    <img src="{{ player.profile_photo.url }}" 
-                         class="rounded-circle mb-3" 
+                    <img src="{{ player.profile_photo.url }}"
+                         class="rounded-circle mb-3"
                          alt="{{ player.full_name }}"
                          style="width: 100px; height: 100px; object-fit: cover;">
                 {% else %}
@@ -28,24 +85,42 @@
                     </div>
                 {% endif %}
 
-                <h5 class="card-title mb-1">{{ player.full_name }}</h5>
-                <p class="text-muted small mb-2">{{ player.get_role_display }}</p>
-                <p class="small mb-3">{{ player.get_position_display }}</p>
+                <h5 class="card-title mb-1">
+                    {{ player.full_name }}
+                </h5>
 
-                <a href="{% url 'player_detail' player.id %}" class="btn btn-success btn-sm">
+                <p class="text-muted small mb-2">
+                    {{ player.get_role_display }}
+                </p>
+
+                <p class="small mb-3">
+                    {{ player.get_position_display }}
+                </p>
+
+                <a href="{% url 'player_detail' player.id %}"
+                   class="btn btn-success btn-sm">
                     View Profile
                 </a>
+
             </div>
         </div>
+
     </div>
+
     {% empty %}
+
     <div class="col-12">
         <div class="alert alert-info">
             No players have joined this pitch yet.
         </div>
     </div>
+
     {% endfor %}
+
 </div>
 
-<a href="{% url 'home' %}" class="btn btn-outline-secondary mt-3">← Back to all pitches</a>
+<a href="{% url 'home' %}" class="btn btn-outline-secondary mt-3">
+    ← Back to all pitches
+</a>
+
 {% endblock %}

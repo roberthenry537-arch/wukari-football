@@ -44,6 +44,15 @@ class Pitch(models.Model):
     location = models.CharField(max_length=200, help_text="Area in Wukari")
     description = models.TextField(blank=True)
 
+    # CLUB THAT USES THIS PITCH
+    club = models.ForeignKey(
+        'Club',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='pitches'
+    )
+
     def __str__(self):
         return self.name
 

@@ -1,49 +1,242 @@
 {% extends 'players/base.html' %}
 
 {% block content %}
-<div class="container mt-4">
 
-    <div class="card shadow-sm mb-4">
-        {% if club.logo %}
-            <img src="{{ club.logo.url }}"
-                 alt="{{ club.name }} logo"
-                 style="max-height:260px; object-fit:contain;">
-        {% endif %}
+<div class="container mt-4 mb-5">
 
-        <div class="card-body">
-            <h2>{{ club.name }}</h2>
-            <p><strong>Location:</strong> {{ club.location }}</p>
-            <p>{{ club.description|default:"No description available yet." }}</p>
+    <!-- CLUB PROFILE HEADER -->
+    <div class="card shadow-sm border-0 rounded-4 overflow-hidden mb-4">
+
+        <div class="bg-light text-center p-4">
+
+            {% if club.logo %}
+                <img src="{{ club.logo.url }}"
+                     alt="{{ club.name }} logo"
+                     class="img-fluid"
+                     style="max-height: 200px; object-fit: contain;">
+            {% else %}
+                <div class="rounded-circle bg-success text-white d-flex align-items-center justify-content-center mx-auto"
+                     style="width: 120px; height: 120px;">
+                    <span class="fs-1">⚽</span>
+                </div>
+            {% endif %}
+
+        </div>
+
+        <div class="card-body p-4">
+
+            <h2 class="fw-bold">{{ club.name }}</h2>
+
+            <p class="text-muted mb-3">
+                <i class="bi bi-geo-alt-fill text-success"></i>
+                {{ club.location }}
+            </p>
+
+            <p>
+                {{ club.description|default:"No description available yet." }}
+            </p>
+
+            <span class="badge bg-success">Football Club</span>
+
         </div>
     </div>
 
-    <h3>Coaches and Staff</h3>
-    <div class="list-group mb-4">
+
+    <!-- CLUB STATISTICS -->
+    <div class="row g-3 mb-5">
+
+        <div class="col-6 col-md-4">
+            <div class="card shadow-sm border-0 rounded-3 text-center p-3 h-100">
+                <h3 class="fw-bold text-success">{{ players.count }}</h3>
+                <small class="text-muted">Players</small>
+            </div>
+        </div>
+
+        <div class="col-6 col-md-4">
+            <div class="card shadow-sm border-0 rounded-3 text-center p-3 h-100">
+                <h3 class="fw-bold text-primary">{{ coaches.count }}</h3>
+                <small class="text-muted">Coaches & Staff</small>
+            </div>
+        </div>
+
+        <div class="col-12 col-md-4">
+            <div class="card shadow-sm border-0 rounded-3 text-center p-3 h-100">
+                <h3 class="fw-bold text-warning">{{ club.pitches.count }}</h3>
+                <small class="text-muted">Football Pitches</small>
+            </div>
+        </div>
+
+    </div>
+
+
+    <!-- HOME GROUNDS -->
+    <h3 class="fw-bold mb-3">Football Pitches / Home Grounds</h3>
+
+    <div class="row mb-5">
+
+        {% for pitch in club.pitches.all %}
+
+        <div class="col-md-6 col-lg-4 mb-3">
+
+            <div class="card h-100 shadow-sm border-0 rounded-3">
+
+                <div class="card-body">
+
+                    <h5 class="fw-bold">{{ pitch.name }}</h5>
+
+                    <p class="text-muted mb-2">
+                        <i class="bi bi-geo-alt"></i>
+                        {{ pitch.location }}
+                    </p>
+
+                    {% if pitch.description %}
+                        <p>{{ pitch.description|truncatewords:18 }}</p>
+                    {% endif %}
+
+                    <a href="{% url 'pitch_detail' pitch.id %}"
+                       class="btn btn-outline-success btn-sm">
+                        View Pitch
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        {% empty %}
+
+        <div class="col-12">
+            <div class="alert alert-info">
+                No football pitches have been assigned to this club yet.
+            </div>
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+
+    <!-- COACHES AND STAFF -->
+    <h3 class="fw-bold mb-3">Coaches & Staff</h3>
+
+    <div class="row mb-5">
+
         {% for coach in coaches %}
-            <a class="list-group-item list-group-item-action"
-               href="{% url 'player_detail' coach.id %}">
-                {{ coach.full_name }} — {{ coach.get_role_display }}
-            </a>
+
+        <div class="col-md-6 col-lg-4 mb-3">
+
+            <div class="card h-100 shadow-sm border-0 rounded-3">
+
+                <div class="card-body text-center">
+
+                    {% if coach.profile_photo %}
+                        <img src="{{ coach.profile_photo.url }}"
+                             class="rounded-circle mb-3"
+                             alt="{{ coach.full_name }}"
+                             style="width: 85px; height: 85px; object-fit: cover;">
+                    {% else %}
+                        <div class="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center mx-auto mb-3"
+                             style="width: 85px; height: 85px;">
+                            <span>No Photo</span>
+                        </div>
+                    {% endif %}
+
+                    <h5 class="fw-bold">{{ coach.full_name }}</h5>
+
+                    <p class="text-muted">
+                        {{ coach.get_role_display }}
+                    </p>
+
+                    <a href="{% url 'player_detail' coach.id %}"
+                       class="btn btn-success btn-sm">
+                        View Profile
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
         {% empty %}
-            <p>No coaches or staff have been assigned to this club yet.</p>
+
+        <div class="col-12">
+            <div class="alert alert-info">
+                No coaches or staff have been assigned to this club yet.
+            </div>
+        </div>
+
         {% endfor %}
+
     </div>
 
-    <h3>Players</h3>
-    <div class="list-group mb-4">
+
+    <!-- PLAYERS -->
+    <h3 class="fw-bold mb-3">Club Players</h3>
+
+    <div class="row">
+
         {% for player in players %}
-            <a class="list-group-item list-group-item-action"
-               href="{% url 'player_detail' player.id %}">
-                {{ player.full_name }} — {{ player.get_position_display }}
-            </a>
+
+        <div class="col-md-6 col-lg-4 mb-3">
+
+            <div class="card h-100 shadow-sm border-0 rounded-3">
+
+                <div class="card-body text-center">
+
+                    {% if player.profile_photo %}
+                        <img src="{{ player.profile_photo.url }}"
+                             class="rounded-circle mb-3"
+                             alt="{{ player.full_name }}"
+                             style="width: 85px; height: 85px; object-fit: cover;">
+                    {% else %}
+                        <div class="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center mx-auto mb-3"
+                             style="width: 85px; height: 85px;">
+                            <span>No Photo</span>
+                        </div>
+                    {% endif %}
+
+                    <h5 class="fw-bold">{{ player.full_name }}</h5>
+
+                    <p class="text-muted mb-1">
+                        {{ player.get_position_display }}
+                    </p>
+
+                    <p class="small text-muted">
+                        {{ player.appearances }} Appearances
+                        | {{ player.goals_scored }} Goals
+                    </p>
+
+                    <a href="{% url 'player_detail' player.id %}"
+                       class="btn btn-success btn-sm">
+                        View Profile
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
         {% empty %}
-            <p>No players have been assigned to this club yet.</p>
+
+        <div class="col-12">
+            <div class="alert alert-info">
+                No players have been assigned to this club yet.
+            </div>
+        </div>
+
         {% endfor %}
+
     </div>
 
-    <a href="{% url 'club_list' %}" class="btn btn-secondary">
-        Back to Clubs
+
+    <!-- BACK BUTTON -->
+    <a href="{% url 'club_list' %}" class="btn btn-outline-secondary mt-4">
+        ← Back to Clubs
     </a>
 
 </div>
+
 {% endblock %}

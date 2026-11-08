@@ -1,43 +1,129 @@
 {% extends 'players/base.html' %}
 
 {% block content %}
-<div class="container mt-4">
-    <h2 class="mb-4">Football Clubs</h2>
 
+<div class="container mt-4 mb-5">
+
+    <!-- PAGE HEADER -->
+    <div class="p-4 p-md-5 mb-4 rounded-4 text-white shadow"
+         style="background: linear-gradient(120deg, #064e3b, #198754);">
+
+        <h2 class="fw-bold mb-2">Football Clubs</h2>
+
+        <p class="mb-0">
+            Discover football clubs, their players and their home grounds
+            across Wukari.
+        </p>
+
+    </div>
+
+
+    <!-- CLUB LIST -->
     <div class="row">
+
         {% for club in clubs %}
-            <div class="col-md-4 mb-4">
-                <div class="card h-100 shadow-sm">
+
+        <div class="col-md-6 col-lg-4 mb-4">
+
+            <div class="card h-100 shadow-sm border-0 rounded-4 overflow-hidden">
+
+                <!-- CLUB LOGO -->
+                <div class="bg-light d-flex align-items-center justify-content-center p-3"
+                     style="height: 200px;">
 
                     {% if club.logo %}
                         <img src="{{ club.logo.url }}"
-                             class="card-img-top"
                              alt="{{ club.name }} logo"
-                             style="height: 200px; object-fit: contain;">
+                             style="max-width: 100%; max-height: 170px; object-fit: contain;">
+                    {% else %}
+                        <div class="rounded-circle bg-success text-white d-flex align-items-center justify-content-center"
+                             style="width: 110px; height: 110px;">
+                            <span class="fs-1">⚽</span>
+                        </div>
                     {% endif %}
 
-                    <div class="card-body">
-                        <h5 class="card-title">{{ club.name }}</h5>
+                </div>
 
-                        <p class="card-text">
-                            <strong>Location:</strong> {{ club.location }}
-                        </p>
 
-                        <p class="card-text">
+                <!-- CLUB INFORMATION -->
+                <div class="card-body p-4">
+
+                    <h4 class="fw-bold mb-2">
+                        {{ club.name }}
+                    </h4>
+
+                    <p class="text-muted mb-3">
+                        <i class="bi bi-geo-alt-fill text-success"></i>
+                        {{ club.location }}
+                    </p>
+
+                    {% if club.description %}
+                        <p class="text-secondary">
                             {{ club.description|truncatewords:20 }}
                         </p>
+                    {% else %}
+                        <p class="text-muted">
+                            No club description available yet.
+                        </p>
+                    {% endif %}
 
-                        <a href="{% url 'club_detail' club.id %}"
-                           class="btn btn-primary">
-                            View Club
-                        </a>
+
+                    <!-- CLUB STATISTICS -->
+                    <div class="row text-center g-2 my-3">
+
+                        <div class="col-6">
+                            <div class="bg-light rounded-3 p-3">
+                                <h4 class="fw-bold text-success mb-1">
+                                    {{ club.members.count }}
+                                </h4>
+                                <small class="text-muted">
+                                    Players & Staff
+                                </small>
+                            </div>
+                        </div>
+
+                        <div class="col-6">
+                            <div class="bg-light rounded-3 p-3">
+                                <h4 class="fw-bold text-primary mb-1">
+                                    {{ club.pitches.count }}
+                                </h4>
+                                <small class="text-muted">
+                                    Football Pitches
+                                </small>
+                            </div>
+                        </div>
+
                     </div>
 
+
+                    <!-- VIEW CLUB -->
+                    <a href="{% url 'club_detail' club.id %}"
+                       class="btn btn-success w-100 rounded-3">
+                        View Club Profile
+                        <i class="bi bi-arrow-right"></i>
+                    </a>
+
                 </div>
+
             </div>
+
+        </div>
+
         {% empty %}
-            <p>No clubs have been added yet.</p>
+
+        <div class="col-12">
+            <div class="alert alert-info text-center p-4">
+                <h5>No Football Clubs Available</h5>
+                <p class="mb-0">
+                    Football clubs will appear here once they have been registered.
+                </p>
+            </div>
+        </div>
+
         {% endfor %}
+
     </div>
+
 </div>
+
 {% endblock %}
