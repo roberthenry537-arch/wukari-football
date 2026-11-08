@@ -6,7 +6,15 @@ from django.views.decorators.http import require_POST
 from django import forms
 from django.utils import timezone
 
-from .models import Pitch, PlayerProfile, Post, Club, Fixture
+from .models import (
+    Pitch,
+    PlayerProfile,
+    Post,
+    PostLike,
+    PostComment,
+    Club,
+    Fixture,
+)
 
 
 # PLAYER PROFILE FORM
@@ -60,8 +68,20 @@ def home(request):
     pitches = Pitch.objects.all()
 
     home_posts = Post.objects.select_related(
-        'author'
+        'author', 'author__user'
+    ).prefetch_related(
+        'likes', 'comments__user'
     ).order_by('-created_at')[:6]
+
+    liked_post_ids = set()
+
+    if request.user.is_authenticated:
+        liked_post_ids = set(
+            PostLike.objects.filter(
+                user=request.user,
+                post__in=home_posts
+            ).values_list('post_id', flat=True)
+        )
 
     total_players = PlayerProfile.objects.filter(
         role='PLAYER'
@@ -98,6 +118,7 @@ def home(request):
     return render(request, 'players/home.html', {
         'pitches': pitches,
         'home_posts': home_posts,
+        'liked_post_ids': liked_post_ids,
         'total_players': total_players,
         'total_coaches': total_coaches,
         'total_clubs': total_clubs,
@@ -106,6 +127,46 @@ def home(request):
         'upcoming_home_fixtures': upcoming_home_fixtures,
         'recent_home_results': recent_home_results,
     })
+
+
+# LIKE OR UNLIKE A FOOTBALL POST
+@login_required
+@require_POST
+def post_like(request, post_id):
+    post = get_object_or_404(Post, id=post_id)
+
+    existing_like = PostLike.objects.filter(
+        post=post,
+        user=request.user
+    )
+
+    if existing_like.exists():
+        existing_like.delete()
+    else:
+        PostLike.objects.get_or_create(
+            post=post,
+            user=request.user
+        )
+
+    return redirect('home')
+
+
+# COMMENT ON A FOOTBALL POST
+@login_required
+@require_POST
+def post_comment(request, post_id):
+    post = get_object_or_404(Post, id=post_id)
+
+    comment_text = request.POST.get('text', '').strip()
+
+    if comment_text and len(comment_text) <= 1000:
+        PostComment.objects.create(
+            post=post,
+            user=request.user,
+            text=comment_text
+        )
+
+    return redirect('home')
 
 
 # FOOTBALL FIXTURES AND RESULTS

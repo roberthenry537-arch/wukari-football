@@ -7,7 +7,7 @@ from cloudinary.models import CloudinaryField
 # FILE UPLOAD SECURITY
 def validate_image_upload(file):
     allowed_extensions = ['jpg', 'jpeg', 'png', 'webp']
-    max_size = 5 * 1024 * 1024  # 5 MB
+    max_size = 5 * 1024 * 1024
 
     extension = file.name.rsplit('.', 1)[-1].lower() if '.' in file.name else ''
 
@@ -24,7 +24,7 @@ def validate_image_upload(file):
 
 def validate_video_upload(file):
     allowed_extensions = ['mp4', 'mov', 'webm']
-    max_size = 50 * 1024 * 1024  # 50 MB
+    max_size = 50 * 1024 * 1024
 
     extension = file.name.rsplit('.', 1)[-1].lower() if '.' in file.name else ''
 
@@ -90,11 +90,13 @@ class PlayerProfile(models.Model):
 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     full_name = models.CharField(max_length=150)
+
     role = models.CharField(
         max_length=20,
         choices=ROLE_CHOICES,
         default='PLAYER'
     )
+
     age = models.PositiveIntegerField()
 
     position = models.CharField(
@@ -182,6 +184,68 @@ class Post(models.Model):
 
     def __str__(self):
         return f"{self.author.full_name} - {self.get_post_type_display()}"
+
+    @property
+    def total_likes(self):
+        return self.likes.count()
+
+    @property
+    def total_comments(self):
+        return self.comments.count()
+
+
+# POST LIKES
+class PostLike(models.Model):
+    post = models.ForeignKey(
+        Post,
+        on_delete=models.CASCADE,
+        related_name='likes'
+    )
+
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='football_post_likes'
+    )
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['post', 'user'],
+                name='unique_user_post_like'
+            )
+        ]
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"{self.user.username} likes {self.post}"
+
+
+# POST COMMENTS
+class PostComment(models.Model):
+    post = models.ForeignKey(
+        Post,
+        on_delete=models.CASCADE,
+        related_name='comments'
+    )
+
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='football_post_comments'
+    )
+
+    text = models.TextField(max_length=1000)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['created_at']
+
+    def __str__(self):
+        return f"{self.user.username} commented on {self.post}"
 
 
 class Fixture(models.Model):

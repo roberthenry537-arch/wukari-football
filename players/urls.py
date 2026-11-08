@@ -28,6 +28,10 @@ urlpatterns = [
     # Posts
     path('create-post/', views.create_post, name='create_post'),
 
+    # Post Likes and Comments
+    path('post/<int:post_id>/like/', views.post_like, name='post_like'),
+    path('post/<int:post_id>/comment/', views.post_comment, name='post_comment'),
+
     # Logout
     path('logout/', views.logout_view, name='player_logout'),
 ]
