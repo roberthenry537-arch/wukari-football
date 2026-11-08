@@ -1,0 +1,49 @@
+{% extends 'players/base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+
+    <div class="card shadow-sm mb-4">
+        {% if club.logo %}
+            <img src="{{ club.logo.url }}"
+                 alt="{{ club.name }} logo"
+                 style="max-height:260px; object-fit:contain;">
+        {% endif %}
+
+        <div class="card-body">
+            <h2>{{ club.name }}</h2>
+            <p><strong>Location:</strong> {{ club.location }}</p>
+            <p>{{ club.description|default:"No description available yet." }}</p>
+        </div>
+    </div>
+
+    <h3>Coaches and Staff</h3>
+    <div class="list-group mb-4">
+        {% for coach in coaches %}
+            <a class="list-group-item list-group-item-action"
+               href="{% url 'player_detail' coach.id %}">
+                {{ coach.full_name }} — {{ coach.get_role_display }}
+            </a>
+        {% empty %}
+            <p>No coaches or staff have been assigned to this club yet.</p>
+        {% endfor %}
+    </div>
+
+    <h3>Players</h3>
+    <div class="list-group mb-4">
+        {% for player in players %}
+            <a class="list-group-item list-group-item-action"
+               href="{% url 'player_detail' player.id %}">
+                {{ player.full_name }} — {{ player.get_position_display }}
+            </a>
+        {% empty %}
+            <p>No players have been assigned to this club yet.</p>
+        {% endfor %}
+    </div>
+
+    <a href="{% url 'club_list' %}" class="btn btn-secondary">
+        Back to Clubs
+    </a>
+
+</div>
+{% endblock %}

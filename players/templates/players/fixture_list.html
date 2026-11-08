@@ -1,0 +1,195 @@
+{% extends 'players/base.html' %}
+
+{% block content %}
+
+<div class="container">
+
+    <div class="text-center mb-4">
+        <h2 class="fw-bold text-success">Football Fixtures & Results</h2>
+        <p class="text-muted">
+            Follow upcoming matches and check previous results in Wukari.
+        </p>
+    </div>
+
+    <!-- UPCOMING FIXTURES -->
+    <div class="mb-5">
+        <h4 class="fw-bold border-bottom pb-2">
+            <span class="text-success">Upcoming Matches</span>
+        </h4>
+
+        <div class="row">
+
+            {% for fixture in upcoming_fixtures %}
+            <div class="col-md-6 col-lg-4 mb-3">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body text-center">
+
+                        <span class="badge bg-success mb-3">
+                            Upcoming
+                        </span>
+
+                        <h5 class="fw-bold">
+                            {{ fixture.home_club.name }}
+                        </h5>
+
+                        <h6 class="text-muted">VS</h6>
+
+                        <h5 class="fw-bold">
+                            {{ fixture.away_club.name }}
+                        </h5>
+
+                        <hr>
+
+                        <p class="mb-1">
+                            <strong>Date:</strong>
+                            {{ fixture.match_date|date:"d M Y" }}
+                        </p>
+
+                        <p class="mb-1">
+                            <strong>Time:</strong>
+                            {{ fixture.match_time|time:"h:i A" }}
+                        </p>
+
+                        <p class="mb-0">
+                            <strong>Venue:</strong>
+                            {{ fixture.venue }}
+                        </p>
+
+                    </div>
+                </div>
+            </div>
+
+            {% empty %}
+            <div class="col-12">
+                <div class="alert alert-info">
+                    No upcoming matches available at the moment.
+                </div>
+            </div>
+            {% endfor %}
+
+        </div>
+    </div>
+
+
+    <!-- COMPLETED MATCHES -->
+    <div class="mb-5">
+        <h4 class="fw-bold border-bottom pb-2">
+            <span class="text-primary">Match Results</span>
+        </h4>
+
+        <div class="row">
+
+            {% for fixture in completed_fixtures %}
+            <div class="col-md-6 col-lg-4 mb-3">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body text-center">
+
+                        <span class="badge bg-primary mb-3">
+                            Full Time
+                        </span>
+
+                        <h5 class="fw-bold">
+                            {{ fixture.home_club.name }}
+                        </h5>
+
+                        <h3 class="fw-bold text-success">
+                            {{ fixture.home_score }}
+                            -
+                            {{ fixture.away_score }}
+                        </h3>
+
+                        <h5 class="fw-bold">
+                            {{ fixture.away_club.name }}
+                        </h5>
+
+                        <hr>
+
+                        <p class="mb-1">
+                            <strong>Date:</strong>
+                            {{ fixture.match_date|date:"d M Y" }}
+                        </p>
+
+                        <p class="mb-0">
+                            <strong>Venue:</strong>
+                            {{ fixture.venue }}
+                        </p>
+
+                    </div>
+                </div>
+            </div>
+
+            {% empty %}
+            <div class="col-12">
+                <div class="alert alert-info">
+                    No match results available yet.
+                </div>
+            </div>
+            {% endfor %}
+
+        </div>
+    </div>
+
+
+    <!-- POSTPONED AND CANCELLED -->
+    <div class="mb-4">
+        <h4 class="fw-bold border-bottom pb-2">
+            Other Fixtures
+        </h4>
+
+        <div class="row">
+
+            {% for fixture in other_fixtures %}
+            <div class="col-md-6 col-lg-4 mb-3">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body text-center">
+
+                        {% if fixture.status == 'POSTPONED' %}
+                            <span class="badge bg-warning text-dark">
+                                Postponed
+                            </span>
+                        {% else %}
+                            <span class="badge bg-danger">
+                                Cancelled
+                            </span>
+                        {% endif %}
+
+                        <h5 class="fw-bold mt-3">
+                            {{ fixture.home_club.name }}
+                        </h5>
+
+                        <h6 class="text-muted">VS</h6>
+
+                        <h5 class="fw-bold">
+                            {{ fixture.away_club.name }}
+                        </h5>
+
+                        <hr>
+
+                        <p>
+                            <strong>Date:</strong>
+                            {{ fixture.match_date|date:"d M Y" }}
+                        </p>
+
+                        <p class="mb-0">
+                            <strong>Venue:</strong>
+                            {{ fixture.venue }}
+                        </p>
+
+                    </div>
+                </div>
+            </div>
+
+            {% empty %}
+            <div class="col-12">
+                <p class="text-muted">
+                    No postponed or cancelled matches.
+                </p>
+            </div>
+            {% endfor %}
+
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

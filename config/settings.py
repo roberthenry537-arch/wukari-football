@@ -6,9 +6,8 @@ from pathlib import Path
 import os
 from dotenv import load_dotenv
 import cloudinary
-import cloudinary.uploader
-import cloudinary.api
 import dj_database_url
+from django.core.exceptions import ImproperlyConfigured
 
 # Load environment variables
 load_dotenv()
@@ -18,10 +17,48 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 # SECURITY
-SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-+kh+81#69^!3^3735pul1$p6q&&172b365o8-l(m=fc6e^4*aa')
-DEBUG = os.getenv('DEBUG', 'True') == 'True'
-ALLOWED_HOSTS = ['*']
+DEBUG = os.getenv('DEBUG', 'True').strip().lower() in ('true', '1', 'yes')
 
+SECRET_KEY = os.getenv(
+    'SECRET_KEY',
+    'django-insecure-local-development-key-only'
+)
+
+if not DEBUG and SECRET_KEY == 'django-insecure-local-development-key-only':
+    raise ImproperlyConfigured(
+        'Set a secure SECRET_KEY environment variable for production.'
+    )
+
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1',
+    'wukari-football.onrender.com',
+]
+
+# Allow additional hosts through an environment variable
+extra_hosts = os.getenv('ALLOWED_HOSTS', '')
+if extra_hosts:
+    ALLOWED_HOSTS += [
+        host.strip()
+        for host in extra_hosts.split(',')
+        if host.strip()
+    ]
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://wukari-football.onrender.com',
+]
+
+# Trust HTTPS forwarded by Render
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+# Production security settings
+if not DEBUG:
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+    SECURE_REFERRER_POLICY = 'strict-origin-when-cross-origin'
+    SECURE_HSTS_SECONDS = 31536000
 
 # Application definition
 INSTALLED_APPS = [
@@ -78,10 +115,18 @@ DATABASES = {
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
-    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
-    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
-    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
-    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
+    {
+        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'
+    },
 ]
 
 
@@ -97,7 +142,7 @@ STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 
-# ====== CLOUDINARY + MEDIA SETTINGS ======
+# Cloudinary + Media settings
 cloudinary.config(
     cloud_name=os.getenv('CLOUDINARY_CLOUD_NAME'),
     api_key=os.getenv('CLOUDINARY_API_KEY'),
@@ -112,19 +157,18 @@ CLOUDINARY_STORAGE = {
 }
 
 STORAGES = {
-    "default": {
-        "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
+    'default': {
+        'BACKEND': 'cloudinary_storage.storage.MediaCloudinaryStorage',
     },
-    "staticfiles": {
-        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    'staticfiles': {
+        'BACKEND': 'whitenoise.storage.CompressedManifestStaticFilesStorage',
     },
 }
 
 MEDIA_URL = '/media/'
-# ========================================
 
 
-# Auth redirects
+# Authentication redirects
 LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'home'
 LOGIN_URL = 'login'

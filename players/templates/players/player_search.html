@@ -1,0 +1,140 @@
+{% extends 'players/base.html' %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <h2 class="mb-3">Discover Players</h2>
+    <p>Find football talents in Wukari using the filters below.</p>
+
+    <form method="GET" class="card p-3 mb-4">
+
+        <div class="mb-3">
+            <label class="form-label">Player Name</label>
+            <input
+                type="text"
+                name="q"
+                class="form-control"
+                placeholder="Search by player name"
+                value="{{ search_query }}"
+            >
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Position</label>
+            <select name="position" class="form-select">
+                <option value="">All Positions</option>
+                <option value="GK" {% if selected_position == 'GK' %}selected{% endif %}>Goalkeeper</option>
+                <option value="DEF" {% if selected_position == 'DEF' %}selected{% endif %}>Defender</option>
+                <option value="MID" {% if selected_position == 'MID' %}selected{% endif %}>Midfielder</option>
+                <option value="FWD" {% if selected_position == 'FWD' %}selected{% endif %}>Forward/Striker</option>
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Preferred Foot</label>
+            <input
+                type="text"
+                name="foot"
+                class="form-control"
+                placeholder="e.g. Left or Right"
+                value="{{ selected_foot }}"
+            >
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Minimum Age</label>
+                <input
+                    type="number"
+                    name="min_age"
+                    class="form-control"
+                    value="{{ min_age }}"
+                    min="1"
+                >
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <label class="form-label">Maximum Age</label>
+                <input
+                    type="number"
+                    name="max_age"
+                    class="form-control"
+                    value="{{ max_age }}"
+                    min="1"
+                >
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">
+            Search Players
+        </button>
+
+        <a href="{% url 'player_search' %}" class="btn btn-outline-secondary mt-2">
+            Clear Filters
+        </a>
+
+    </form>
+
+    <h4 class="mb-3">Search Results</h4>
+
+    <div class="row">
+
+        {% for player in players %}
+
+        <div class="col-md-4 mb-4">
+
+            <div class="card h-100 shadow-sm">
+
+                {% if player.profile_photo %}
+                    <img
+                        src="{{ player.profile_photo.url }}"
+                        class="card-img-top"
+                        style="height: 230px; object-fit: cover;"
+                        alt="{{ player.full_name }}"
+                    >
+                {% endif %}
+
+                <div class="card-body">
+
+                    <h5 class="card-title">{{ player.full_name }}</h5>
+
+                    <p class="card-text">
+                        <strong>Position:</strong> {{ player.get_position_display }}<br>
+                        <strong>Age:</strong> {{ player.age }}<br>
+                        <strong>Preferred Foot:</strong>
+                        {{ player.preferred_foot|default:"Not specified" }}<br>
+
+                        <strong>Pitch:</strong>
+                        {% if player.current_pitch %}
+                            {{ player.current_pitch.name }}
+                        {% else %}
+                            Not specified
+                        {% endif %}
+                    </p>
+
+                    <a href="{% url 'player_detail' player.id %}"
+                       class="btn btn-primary">
+                        View Profile
+                    </a>
+
+                </div>
+            </div>
+
+        </div>
+
+        {% empty %}
+
+        <div class="col-12">
+            <div class="alert alert-info">
+                No players found. Try changing your search filters.
+            </div>
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,43 @@
+{% extends 'players/base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2 class="mb-4">Football Clubs</h2>
+
+    <div class="row">
+        {% for club in clubs %}
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 shadow-sm">
+
+                    {% if club.logo %}
+                        <img src="{{ club.logo.url }}"
+                             class="card-img-top"
+                             alt="{{ club.name }} logo"
+                             style="height: 200px; object-fit: contain;">
+                    {% endif %}
+
+                    <div class="card-body">
+                        <h5 class="card-title">{{ club.name }}</h5>
+
+                        <p class="card-text">
+                            <strong>Location:</strong> {{ club.location }}
+                        </p>
+
+                        <p class="card-text">
+                            {{ club.description|truncatewords:20 }}
+                        </p>
+
+                        <a href="{% url 'club_detail' club.id %}"
+                           class="btn btn-primary">
+                            View Club
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+        {% empty %}
+            <p>No clubs have been added yet.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

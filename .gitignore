@@ -1,0 +1,20 @@
+# Environment secrets
+.env
+.env.*
+config/.env
+config/.env.*
+
+# Python files
+__pycache__/
+*.py[cod]
+
+# Django files
+db.sqlite3
+staticfiles/
+
+# Virtual environments
+venv/
+.venv/
+
+# Editor files
+.vscode/
