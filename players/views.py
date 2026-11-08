@@ -59,6 +59,10 @@ class PostForm(forms.ModelForm):
 def home(request):
     pitches = Pitch.objects.all()
 
+    home_posts = Post.objects.select_related(
+        'author'
+    ).order_by('-created_at')[:6]
+
     total_players = PlayerProfile.objects.filter(
         role='PLAYER'
     ).count()
@@ -93,6 +97,7 @@ def home(request):
 
     return render(request, 'players/home.html', {
         'pitches': pitches,
+        'home_posts': home_posts,
         'total_players': total_players,
         'total_coaches': total_coaches,
         'total_clubs': total_clubs,
