@@ -406,3 +406,7 @@ def become_referee(request):
         form = RefereeForm()
 
     return render(request, 'players/become_referee.html', {'form': form})
+
+    def referee_list(request):
+    referees = Referee.objects.all().order_by('full_name')
+    return render(request, 'players/referee_list.html', {'referees': referees})

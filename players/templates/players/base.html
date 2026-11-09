@@ -92,6 +92,13 @@
                         </a>
                     </li>
 
+                    <!-- REFEREES -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'referee_list' %}">
+                            Referees
+                        </a>
+                    </li>
+
                     <!-- BECOME A REFEREE -->
                     {% if user.is_authenticated %}
                     <li class="nav-item">
