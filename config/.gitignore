@@ -1,0 +1,28 @@
+# Environment variables and secrets
+.env
+.env.*
+config/.env
+config/.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+
+# Django
+db.sqlite3
+staticfiles/
+
+# Virtual environments
+venv/
+.venv/
+
+# IDE and operating system
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Testing
+.coverage
+htmlcov/
+.pytest_cache/

@@ -22,11 +22,10 @@ class PlayerProfileForm(forms.ModelForm):
     class Meta:
         model = PlayerProfile
         fields = [
-            'full_name', 'role', 'age', 'position', 'preferred_foot',
-            'height', 'phone_number', 'religion', 'state_of_origin',
-            'bio', 'current_pitch', 'goals_scored', 'appearances',
-            'profile_photo'
-        ]
+    'full_name', 'role', 'age', 'position', 'preferred_foot',
+    'height', 'phone_number', 'religion', 'state_of_origin',
+    'bio', 'current_pitch', 'club', 'goals_scored', 'appearances', 'profile_photo'
+]
 
 
 # SECURE POST FORM

@@ -12,14 +12,10 @@ def validate_image_upload(file):
     extension = file.name.rsplit('.', 1)[-1].lower() if '.' in file.name else ''
 
     if extension not in allowed_extensions:
-        raise ValidationError(
-            'Only JPG, JPEG, PNG and WEBP images are allowed.'
-        )
+        raise ValidationError('Only JPG, JPEG, PNG and WEBP images are allowed.')
 
     if file.size > max_size:
-        raise ValidationError(
-            'Image size must not exceed 5 MB.'
-        )
+        raise ValidationError('Image size must not exceed 5 MB.')
 
 
 def validate_video_upload(file):
@@ -29,47 +25,34 @@ def validate_video_upload(file):
     extension = file.name.rsplit('.', 1)[-1].lower() if '.' in file.name else ''
 
     if extension not in allowed_extensions:
-        raise ValidationError(
-            'Only MP4, MOV and WEBM videos are allowed.'
-        )
+        raise ValidationError('Only MP4, MOV and WEBM videos are allowed.')
 
     if file.size > max_size:
-        raise ValidationError(
-            'Video size must not exceed 50 MB.'
-        )
-
-
-class Pitch(models.Model):
-    name = models.CharField(max_length=200)
-    location = models.CharField(max_length=200, help_text="Area in Wukari")
-    description = models.TextField(blank=True)
-
-    # CLUB THAT USES THIS PITCH
-    club = models.ForeignKey(
-        'Club',
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        related_name='pitches'
-    )
-
-    def __str__(self):
-        return self.name
+        raise ValidationError('Video size must not exceed 50 MB.')
 
 
 class Club(models.Model):
     name = models.CharField(max_length=200, unique=True)
     location = models.CharField(max_length=200)
     description = models.TextField(blank=True)
-
-    logo = CloudinaryField(
-        'image',
-        blank=True,
-        null=True,
-        validators=[validate_image_upload]
-    )
-
+    logo = CloudinaryField('image', blank=True, null=True, validators=[validate_image_upload])
     created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.name
+
+
+class Pitch(models.Model):
+    name = models.CharField(max_length=200)
+    location = models.CharField(max_length=200, help_text="Area in Wukari")
+    description = models.TextField(blank=True)
+    club = models.ForeignKey(
+        Club,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='pitches'
+    )
 
     def __str__(self):
         return self.name
@@ -99,21 +82,9 @@ class PlayerProfile(models.Model):
 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     full_name = models.CharField(max_length=150)
-
-    role = models.CharField(
-        max_length=20,
-        choices=ROLE_CHOICES,
-        default='PLAYER'
-    )
-
+    role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='PLAYER')
     age = models.PositiveIntegerField()
-
-    position = models.CharField(
-        max_length=3,
-        choices=POSITION_CHOICES,
-        default='N/A'
-    )
-
+    position = models.CharField(max_length=3, choices=POSITION_CHOICES, default='N/A')
     preferred_foot = models.CharField(max_length=10, blank=True)
     height = models.CharField(max_length=10, blank=True, help_text="e.g. 1.75m")
     phone_number = models.CharField(max_length=15, blank=True)
@@ -163,13 +134,7 @@ class Post(models.Model):
         on_delete=models.CASCADE,
         related_name='posts'
     )
-
-    post_type = models.CharField(
-        max_length=10,
-        choices=POST_TYPE_CHOICES,
-        default='PHOTO'
-    )
-
+    post_type = models.CharField(max_length=10, choices=POST_TYPE_CHOICES, default='PHOTO')
     caption = models.TextField(blank=True)
 
     image = models.ImageField(
@@ -203,28 +168,14 @@ class Post(models.Model):
         return self.comments.count()
 
 
-# POST LIKES
 class PostLike(models.Model):
-    post = models.ForeignKey(
-        Post,
-        on_delete=models.CASCADE,
-        related_name='likes'
-    )
-
-    user = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-        related_name='football_post_likes'
-    )
-
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='likes')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='football_post_likes')
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         constraints = [
-            models.UniqueConstraint(
-                fields=['post', 'user'],
-                name='unique_user_post_like'
-            )
+            models.UniqueConstraint(fields=['post', 'user'], name='unique_user_post_like')
         ]
         ordering = ['-created_at']
 
@@ -232,22 +183,10 @@ class PostLike(models.Model):
         return f"{self.user.username} likes {self.post}"
 
 
-# POST COMMENTS
 class PostComment(models.Model):
-    post = models.ForeignKey(
-        Post,
-        on_delete=models.CASCADE,
-        related_name='comments'
-    )
-
-    user = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-        related_name='football_post_comments'
-    )
-
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='comments')
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='football_post_comments')
     text = models.TextField(max_length=1000)
-
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -265,31 +204,14 @@ class Fixture(models.Model):
         ('CANCELLED', 'Cancelled'),
     ]
 
-    home_club = models.ForeignKey(
-        Club,
-        on_delete=models.CASCADE,
-        related_name='home_fixtures'
-    )
-
-    away_club = models.ForeignKey(
-        Club,
-        on_delete=models.CASCADE,
-        related_name='away_fixtures'
-    )
-
+    home_club = models.ForeignKey(Club, on_delete=models.CASCADE, related_name='home_fixtures')
+    away_club = models.ForeignKey(Club, on_delete=models.CASCADE, related_name='away_fixtures')
     match_date = models.DateField()
     match_time = models.TimeField()
     venue = models.CharField(max_length=200)
-
     home_score = models.PositiveIntegerField(null=True, blank=True)
     away_score = models.PositiveIntegerField(null=True, blank=True)
-
-    status = models.CharField(
-        max_length=10,
-        choices=STATUS_CHOICES,
-        default='UPCOMING'
-    )
-
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='UPCOMING')
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
@@ -297,9 +219,7 @@ class Fixture(models.Model):
 
     def clean(self):
         if self.home_club == self.away_club:
-            raise ValidationError(
-                "A club cannot play against itself."
-            )
+            raise ValidationError("A club cannot play against itself.")
 
     def __str__(self):
         return f"{self.home_club} vs {self.away_club} - {self.match_date}"
