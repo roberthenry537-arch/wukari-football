@@ -5,6 +5,7 @@ from .models import (
     Post,
     Club,
     Fixture,
+    Referee
     PostLike,
     PostComment,
 )
