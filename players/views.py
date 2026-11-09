@@ -1,4 +1,5 @@
 from .models import Referee
+from django import forms
 
 class RefereeForm(forms.ModelForm):
     class Meta:
