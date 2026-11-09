@@ -1,42 +1,28 @@
 {% extends 'players/base.html' %}
 {% block content %}
+
 <!-- HERO SECTION -->
-<div class="p-4 p-md-5 mb-5 rounded-4 text-white shadow"
-     style="background: linear-gradient(120deg, #064e3b, #198754);">
+<div class="p-4 p-md-5 mb-5 rounded-4 text-white shadow" style="background: linear-gradient(120deg, #064e3b, #198754);">
     <div class="row align-items-center">
         <div class="col-lg-8">
-            <span class="badge bg-warning text-dark mb-3">
-                WUKARI FOOTBALL PLATFORM
-            </span>
-            <h1 class="display-5 fw-bold">
-                Discover Football Talent.
-            </h1>
-            <p class="lead">
-                Connecting players, coaches and football clubs
-                across Wukari, Taraba State.
-            </p>
+            <span class="badge bg-warning text-dark mb-3">WUKARI FOOTBALL PLATFORM</span>
+            <h1 class="display-5 fw-bold">Discover Football Talent.</h1>
+            <p class="lead">Connecting players, coaches and football clubs across Wukari, Taraba State.</p>
             <div class="mt-4">
-                <a href="{% url 'player_search' %}"
-                   class="btn btn-light btn-lg me-2 mb-2">
-                    Discover Players
-                </a>
-                <a href="{% url 'club_list' %}"
-                   class="btn btn-outline-light btn-lg mb-2">
-                    Explore Clubs
-                </a>
+                <a href="{% url 'player_search' %}" class="btn btn-light btn-lg me-2 mb-2">Discover Players</a>
+                <a href="{% url 'club_list' %}" class="btn btn-outline-light btn-lg mb-2">Explore Clubs</a>
             </div>
         </div>
     </div>
 </div>
+
 <!-- DASHBOARD STATISTICS -->
 <h3 class="fw-bold mb-4">Platform Statistics</h3>
 <div class="row mb-5">
     <div class="col-6 col-lg-3 mb-3">
         <div class="card border-0 shadow-sm h-100">
             <div class="card-body text-center p-4">
-                <h2 class="fw-bold text-success">
-                    {{ total_players }}
-                </h2>
+                <h2 class="fw-bold text-success">{{ total_players }}</h2>
                 <p class="text-muted mb-0">Registered Players</p>
             </div>
         </div>
@@ -44,9 +30,7 @@
     <div class="col-6 col-lg-3 mb-3">
         <div class="card border-0 shadow-sm h-100">
             <div class="card-body text-center p-4">
-                <h2 class="fw-bold text-primary">
-                    {{ total_coaches }}
-                </h2>
+                <h2 class="fw-bold text-primary">{{ total_coaches }}</h2>
                 <p class="text-muted mb-0">Coaches</p>
             </div>
         </div>
@@ -54,9 +38,7 @@
     <div class="col-6 col-lg-3 mb-3">
         <div class="card border-0 shadow-sm h-100">
             <div class="card-body text-center p-4">
-                <h2 class="fw-bold text-warning">
-                    {{ total_clubs }}
-                </h2>
+                <h2 class="fw-bold text-warning">{{ total_clubs }}</h2>
                 <p class="text-muted mb-0">Football Clubs</p>
             </div>
         </div>
@@ -64,64 +46,194 @@
     <div class="col-6 col-lg-3 mb-3">
         <div class="card border-0 shadow-sm h-100">
             <div class="card-body text-center p-4">
-                <h2 class="fw-bold text-danger">
-                    {{ total_pitches }}
-                </h2>
+                <h2 class="fw-bold text-danger">{{ total_pitches }}</h2>
                 <p class="text-muted mb-0">Football Pitches</p>
             </div>
         </div>
     </div>
 </div>
+
 <!-- QUICK ACCESS -->
 <h3 class="fw-bold mb-4">Explore Our Platform</h3>
 <div class="row mb-5">
     <div class="col-md-4 mb-3">
-        <a href="{% url 'player_search' %}"
-           class="text-decoration-none text-dark">
+        <a href="{% url 'player_search' %}" class="text-decoration-none text-dark">
             <div class="card h-100 shadow-sm border-0">
                 <div class="card-body p-4">
                     <h4>⚽ Players</h4>
-                    <p class="text-muted mb-0">
-                        Discover football players and their profiles.
-                    </p>
+                    <p class="text-muted mb-0">Discover football players and their profiles.</p>
                 </div>
             </div>
         </a>
     </div>
     <div class="col-md-4 mb-3">
-        <a href="{% url 'club_list' %}"
-           class="text-decoration-none text-dark">
+        <a href="{% url 'club_list' %}" class="text-decoration-none text-dark">
             <div class="card h-100 shadow-sm border-0">
                 <div class="card-body p-4">
                     <h4>🏆 Clubs</h4>
-                    <p class="text-muted mb-0">
-                        Explore football clubs and their members.
-                    </p>
+                    <p class="text-muted mb-0">Explore football clubs and their members.</p>
                 </div>
             </div>
         </a>
     </div>
     <div class="col-md-4 mb-3">
-        <a href="{% url 'fixture_list' %}"
-           class="text-decoration-none text-dark">
+        <a href="{% url 'fixture_list' %}" class="text-decoration-none text-dark">
             <div class="card h-100 shadow-sm border-0">
                 <div class="card-body p-4">
                     <h4>📅 Fixtures & Results</h4>
-                    <p class="text-muted mb-0">
-                        Follow upcoming matches and previous results.
-                    </p>
+                    <p class="text-muted mb-0">Follow upcoming matches and previous results.</p>
                 </div>
             </div>
         </a>
     </div>
 </div>
+
+<!-- FEATURED PLAYERS -->
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h3 class="fw-bold mb-1">⭐ Featured Players</h3>
+        <p class="text-muted mb-0">Meet some of the football talents in Wukari.</p>
+    </div>
+    <a href="{% url 'player_search' %}" class="btn btn-outline-success btn-sm">View All</a>
+</div>
+<div class="row mb-5">
+    {% for player in featured_players %}
+    <div class="col-6 col-md-4 col-lg-3 mb-4">
+        <div class="card h-100 shadow-sm border-0">
+            {% if player.profile_photo %}
+                <img src="{{ player.profile_photo.url }}" class="card-img-top" alt="{{ player.full_name }}" style="height: 200px; object-fit: cover;">
+            {% else %}
+                <div class="bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+                    <span class="display-3">⚽</span>
+                </div>
+            {% endif %}
+            <div class="card-body">
+                <h5 class="fw-bold">{{ player.full_name }}</h5>
+                <p class="text-success mb-2">{{ player.get_position_display }}</p>
+                <a href="{% url 'player_detail' player.id %}" class="btn btn-success btn-sm w-100">View Profile</a>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-12">
+        <div class="alert alert-info">No featured players available yet.</div>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- UPCOMING FIXTURES -->
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h3 class="fw-bold mb-1">📅 Upcoming Fixtures</h3>
+        <p class="text-muted mb-0">Stay updated on upcoming football matches.</p>
+    </div>
+    <a href="{% url 'fixture_list' %}" class="btn btn-outline-success btn-sm">View All</a>
+</div>
+<div class="row mb-5">
+    {% for fixture in upcoming_home_fixtures %}
+    <div class="col-md-6 mb-3">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-body p-4 text-center">
+                <span class="badge bg-success mb-3">UPCOMING</span>
+                <div class="row align-items-center">
+                    <div class="col-5">
+                        <h5 class="fw-bold">{{ fixture.home_club.name }}</h5>
+                        <small class="text-muted">Home</small>
+                    </div>
+                    <div class="col-2">
+                        <h5 class="fw-bold text-success">VS</h5>
+                    </div>
+                    <div class="col-5">
+                        <h5 class="fw-bold">{{ fixture.away_club.name }}</h5>
+                        <small class="text-muted">Away</small>
+                    </div>
+                </div>
+                <hr>
+                <p class="mb-1">📅 {{ fixture.match_date|date:"D, d M Y" }}</p>
+                <p class="mb-1">🕒 {{ fixture.match_time|time:"h:i A" }}</p>
+                <p class="text-muted mb-0">📍 {{ fixture.venue }}</p>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-12">
+        <div class="alert alert-info">No upcoming fixtures available at the moment.</div>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- RECENT MATCH RESULTS -->
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h3 class="fw-bold mb-1">🏆 Recent Match Results</h3>
+        <p class="text-muted mb-0">Check out the latest completed matches.</p>
+    </div>
+    <a href="{% url 'fixture_list' %}" class="btn btn-outline-success btn-sm">View All</a>
+</div>
+<div class="row mb-5">
+    {% for fixture in recent_home_results %}
+    <div class="col-md-6 mb-3">
+        <div class="card border-0 shadow-sm h-100">
+            <div class="card-body p-4 text-center">
+                <span class="badge bg-primary mb-3">FULL TIME</span>
+                <div class="row align-items-center">
+                    <div class="col-5">
+                        <h5 class="fw-bold">{{ fixture.home_club.name }}</h5>
+                    </div>
+                    <div class="col-2">
+                        <h4 class="fw-bold text-success">{{ fixture.home_score }} - {{ fixture.away_score }}</h4>
+                    </div>
+                    <div class="col-5">
+                        <h5 class="fw-bold">{{ fixture.away_club.name }}</h5>
+                    </div>
+                </div>
+                <hr>
+                <p class="mb-1">📅 {{ fixture.match_date|date:"D, d M Y" }}</p>
+                <p class="text-muted mb-0">📍 {{ fixture.venue }}</p>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-12">
+        <div class="alert alert-info">No completed match results available yet.</div>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- FOOTBALL PITCHES -->
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h3 class="fw-bold mb-1">Football Pitches</h3>
+        <p class="text-muted mb-0">Explore football grounds around Wukari.</p>
+    </div>
+</div>
+<div class="row mb-5">
+    {% for pitch in pitches %}
+    <div class="col-md-6 col-lg-4 mb-4">
+        <div class="card h-100 shadow-sm border-0">
+            <div class="card-body p-4">
+                <h5 class="fw-bold">{{ pitch.name }}</h5>
+                {% if pitch.club %}
+                    <p class="mb-2"><strong>Club:</strong> <a href="{% url 'club_detail' pitch.club.id %}" class="text-success text-decoration-none">{{ pitch.club.name }}</a></p>
+                {% endif %}
+                <p class="text-success mb-2">📍 {{ pitch.location }}</p>
+                <p class="text-muted">{{ pitch.description|default:"Explore players and football talent at this pitch."|truncatewords:20 }}</p>
+                <a href="{% url 'pitch_detail' pitch.id %}" class="btn btn-success">View Players</a>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-12">
+        <div class="alert alert-info">No football pitches have been added yet.</div>
+    </div>
+    {% endfor %}
+</div>
+
 <!-- LATEST FOOTBALL POSTS -->
 <div class="d-flex justify-content-between align-items-center mb-4">
     <div>
         <h3 class="fw-bold mb-1">📢 Latest Football Posts</h3>
-        <p class="text-muted mb-0">
-            See the latest photos, videos and updates from our football community.
-        </p>
+        <p class="text-muted mb-0">See the latest photos, videos and updates from our football community.</p>
     </div>
 </div>
 <div class="row mb-5">
@@ -129,346 +241,67 @@
     <div class="col-md-6 col-lg-4 mb-4">
         <div class="card h-100 shadow-sm border-0">
             {% if post.post_type == 'PHOTO' and post.image %}
-                <img src="{{ post.image.url }}"
-                     class="card-img-top"
-                     alt="Football post"
-                     style="height: 260px; object-fit: cover;">
+                <img src="{{ post.image.url }}" class="card-img-top" alt="Football post" style="height: 260px; object-fit: cover;">
             {% elif post.post_type == 'VIDEO' and post.video %}
-                <video controls
-                       preload="metadata"
-                       class="w-100"
-                       style="height: 260px; object-fit: cover;">
+                <video controls preload="metadata" class="w-100" style="height: 260px; object-fit: cover;">
                     <source src="{{ post.video.url }}">
-                    Your browser does not support video playback.
                 </video>
             {% endif %}
             <div class="card-body">
-                <h5 class="fw-bold">
-                    {{ post.author.full_name }}
-                </h5>
-                <span class="badge bg-success mb-2">
-                    {{ post.get_post_type_display }}
-                </span>
+                <h5 class="fw-bold">{{ post.author.full_name }}</h5>
+                <span class="badge bg-success mb-2">{{ post.get_post_type_display }}</span>
                 {% if post.caption %}
-                    <p class="text-muted">
-                        {{ post.caption|linebreaksbr }}
-                    </p>
+                    <p class="text-muted">{{ post.caption|linebreaksbr }}</p>
                 {% endif %}
-                <small class="text-muted">
-                    {{ post.created_at|date:"d M Y, h:i A" }}
-                </small>
+                <small class="text-muted">{{ post.created_at|date:"d M Y, h:i A" }}</small>
                 <hr>
-                <!-- LIKE BUTTON -->
                 {% if user.is_authenticated %}
-                    <form method="POST"
-                          action="{% url 'post_like' post.id %}">
+                    <form method="POST" action="{% url 'post_like' post.id %}">
                         {% csrf_token %}
                         {% if post.id in liked_post_ids %}
-                            <button type="submit"
-                                    class="btn btn-danger btn-sm">
-                                ❤️ Unlike
-                            </button>
+                            <button type="submit" class="btn btn-danger btn-sm">❤️ Unlike</button>
                         {% else %}
-                            <button type="submit"
-                                    class="btn btn-outline-danger btn-sm">
-                                🤍 Like
-                            </button>
+                            <button type="submit" class="btn btn-outline-danger btn-sm">🤍 Like</button>
                         {% endif %}
-                        <span class="ms-2">
-                            {{ post.total_likes }} Likes
-                        </span>
+                        <span class="ms-2">{{ post.total_likes }} Likes</span>
                     </form>
                 {% else %}
-                    <p class="mb-0">
-                        ❤️ {{ post.total_likes }} Likes
-                    </p>
-                    <small class="text-muted">
-                        Log in to like this post.
-                    </small>
+                    <p class="mb-0">❤️ {{ post.total_likes }} Likes</p>
                 {% endif %}
                 <hr>
-                <!-- COMMENTS -->
-                <h6 class="fw-bold">
-                    💬 Comments ({{ post.total_comments }})
-                </h6>
+                <h6 class="fw-bold">💬 Comments ({{ post.total_comments }})</h6>
                 {% for comment in post.comments.all %}
                     <div class="bg-light rounded p-2 mb-2">
                         <strong>{{ comment.user.username }}</strong>
-                        <p class="mb-1">
-                            {{ comment.text|linebreaksbr }}
-                        </p>
-                        <small class="text-muted">
-                            {{ comment.created_at|date:"d M Y, h:i A" }}
-                        </small>
+                        <p class="mb-1">{{ comment.text|linebreaksbr }}</p>
+                        <small class="text-muted">{{ comment.created_at|date:"d M Y, h:i A" }}</small>
                     </div>
                 {% empty %}
-                    <p class="text-muted small">
-                        No comments yet. Be the first to comment!
-                    </p>
+                    <p class="text-muted small">No comments yet.</p>
                 {% endfor %}
                 {% if user.is_authenticated %}
-                    <form method="POST"
-                          action="{% url 'post_comment' post.id %}"
-                          class="mt-3">
+                    <form method="POST" action="{% url 'post_comment' post.id %}" class="mt-3">
                         {% csrf_token %}
-                        <textarea name="text"
-                                  class="form-control mb-2"
-                                  rows="2"
-                                  maxlength="1000"
-                                  placeholder="Write a comment..."
-                                  required></textarea>
-                        <button type="submit"
-                                class="btn btn-success btn-sm">
-                            Post Comment
-                        </button>
+                        <textarea name="text" class="form-control mb-2" rows="2" maxlength="1000" placeholder="Write a comment..." required></textarea>
+                        <button type="submit" class="btn btn-success btn-sm">Post Comment</button>
                     </form>
-                {% else %}
-                    <small class="text-muted">
-                        Log in to comment on this post.
-                    </small>
                 {% endif %}
                 <hr>
-                <a href="{% url 'player_detail' post.author.id %}"
-                   class="btn btn-outline-success btn-sm">
-                    View Player Profile
-                </a>
+                <a href="{% url 'player_detail' post.author.id %}" class="btn btn-outline-success btn-sm">View Player Profile</a>
             </div>
         </div>
     </div>
     {% empty %}
     <div class="col-12">
-        <div class="alert alert-info">
-            No football posts available yet.
-            Be the first to share an update!
-        </div>
+        <div class="alert alert-info">No football posts available yet.</div>
     </div>
     {% endfor %}
 </div>
-<!-- FEATURED PLAYERS -->
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <div>
-        <h3 class="fw-bold mb-1">⭐ Featured Players</h3>
-        <p class="text-muted mb-0">
-            Meet some of the football talents in Wukari.
-        </p>
-    </div>
-    <a href="{% url 'player_search' %}"
-       class="btn btn-outline-success btn-sm">
-        View All
-    </a>
-</div>
-<div class="row mb-5">
-    {% for player in featured_players %}
-    <div class="col-6 col-md-4 col-lg-3 mb-4">
-        <div class="card h-100 shadow-sm border-0">
-            {% if player.profile_photo %}
-                <img src="{{ player.profile_photo.url }}"
-                     class="card-img-top"
-                     alt="{{ player.full_name }}"
-                     style="height: 200px; object-fit: cover;">
-            {% else %}
-                <div class="bg-light d-flex align-items-center justify-content-center"
-                     style="height: 200px;">
-                    <span class="display-3">⚽</span>
-                </div>
-            {% endif %}
-            <div class="card-body">
-                <h5 class="fw-bold">
-                    {{ player.full_name }}
-                </h5>
-                <p class="text-success mb-2">
-                    {{ player.position|default:"Football Player" }}
-                </p>
-                <a href="{% url 'player_detail' player.id %}"
-                   class="btn btn-success btn-sm w-100">
-                    View Profile
-                </a>
-            </div>
-        </div>
-    </div>
-    {% empty %}
-    <div class="col-12">
-        <div class="alert alert-info">
-            No featured players available yet.
-            Add player profiles to display them here.
-        </div>
-    </div>
-    {% endfor %}
-</div>
-<!-- UPCOMING FIXTURES -->
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <div>
-        <h3 class="fw-bold mb-1">📅 Upcoming Fixtures</h3>
-        <p class="text-muted mb-0">
-            Stay updated on upcoming football matches.
-        </p>
-    </div>
-    <a href="{% url 'fixture_list' %}"
-       class="btn btn-outline-success btn-sm">
-        View All
-    </a>
-</div>
-<div class="row mb-5">
-    {% for fixture in upcoming_home_fixtures %}
-    <div class="col-md-6 mb-3">
-        <div class="card border-0 shadow-sm h-100">
-            <div class="card-body p-4 text-center">
-                <span class="badge bg-success mb-3">
-                    UPCOMING
-                </span>
-                <div class="row align-items-center">
-                    <div class="col-5">
-                        <h5 class="fw-bold">
-                            {{ fixture.home_club.name }}
-                        </h5>
-                        <small class="text-muted">Home</small>
-                    </div>
-                    <div class="col-2">
-                        <h5 class="fw-bold text-success">VS</h5>
-                    </div>
-                    <div class="col-5">
-                        <h5 class="fw-bold">
-                            {{ fixture.away_club.name }}
-                        </h5>
-                        <small class="text-muted">Away</small>
-                    </div>
-                </div>
-                <hr>
-                <p class="mb-1">
-                    📅 {{ fixture.match_date|date:"D, d M Y" }}
-                </p>
-                <p class="mb-1">
-                    🕒 {{ fixture.match_time|time:"h:i A" }}
-                </p>
-                <p class="text-muted mb-0">
-                    📍 {{ fixture.venue }}
-                </p>
-            </div>
-        </div>
-    </div>
-    {% empty %}
-    <div class="col-12">
-        <div class="alert alert-info">
-            No upcoming fixtures available at the moment.
-        </div>
-    </div>
-    {% endfor %}
-</div>
-<!-- RECENT MATCH RESULTS -->
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <div>
-        <h3 class="fw-bold mb-1">🏆 Recent Match Results</h3>
-        <p class="text-muted mb-0">
-            Check out the latest completed matches.
-        </p>
-    </div>
-    <a href="{% url 'fixture_list' %}"
-       class="btn btn-outline-success btn-sm">
-        View All
-    </a>
-</div>
-<div class="row mb-5">
-    {% for fixture in recent_home_results %}
-    <div class="col-md-6 mb-3">
-        <div class="card border-0 shadow-sm h-100">
-            <div class="card-body p-4 text-center">
-                <span class="badge bg-primary mb-3">
-                    FULL TIME
-                </span>
-                <div class="row align-items-center">
-                    <div class="col-5">
-                        <h5 class="fw-bold">
-                            {{ fixture.home_club.name }}
-                        </h5>
-                    </div>
-                    <div class="col-2">
-                        <h4 class="fw-bold text-success">
-                            {{ fixture.home_score }} - {{ fixture.away_score }}
-                        </h4>
-                    </div>
-                    <div class="col-5">
-                        <h5 class="fw-bold">
-                            {{ fixture.away_club.name }}
-                        </h5>
-                    </div>
-                </div>
-                <hr>
-                <p class="mb-1">
-                    📅 {{ fixture.match_date|date:"D, d M Y" }}
-                </p>
-                <p class="text-muted mb-0">
-                    📍 {{ fixture.venue }}
-                </p>
-            </div>
-        </div>
-    </div>
-    {% empty %}
-    <div class="col-12">
-        <div class="alert alert-info">
-            No completed match results available yet.
-        </div>
-    </div>
-    {% endfor %}
-</div>
-<!-- FOOTBALL PITCHES -->
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <div>
-        <h3 class="fw-bold mb-1">Football Pitches</h3>
-        <p class="text-muted mb-0">
-            Explore football grounds around Wukari.
-        </p>
-    </div>
-</div>
-<div class="row">
-    {% for pitch in pitches %}
-    <div class="col-md-6 col-lg-4 mb-4">
-        <div class="card h-100 shadow-sm border-0">
-            <div class="card-body p-4">
-                <h5 class="fw-bold">
-                    {{ pitch.name }}
-                </h5>
-                {% if pitch.club %}
-                    <p class="mb-2">
-                        <strong>Club:</strong>
-                        <a href="{% url 'club_detail' pitch.club.id %}"
-                           class="text-success text-decoration-none">
-                            {{ pitch.club.name }}
-                        </a>
-                    </p>
-                {% else %}
-                    <p class="text-muted mb-2">
-                        <strong>Club:</strong> Not assigned yet
-                    </p>
-                {% endif %}
-                <p class="text-success mb-2">
-                    📍 {{ pitch.location }}
-                </p>
-                <p class="text-muted">
-                    {{ pitch.description|default:"Explore players and football talent at this pitch."|truncatewords:20 }}
-                </p>
-                <a href="{% url 'pitch_detail' pitch.id %}"
-                   class="btn btn-success">
-                    View Players
-                </a>
-            </div>
-        </div>
-    </div>
-    {% empty %}
-    <div class="col-12">
-        <div class="alert alert-info">
-            No football pitches have been added yet.
-        </div>
-    </div>
-    {% endfor %}
-</div>
+
 <!-- FOOTER MESSAGE -->
 <div class="text-center bg-light rounded-4 p-4 mt-4 mb-4">
-    <h4 class="fw-bold text-success">
-        Growing Football Talent in Wukari
-    </h4>
-    <p class="text-muted mb-0">
-        Bringing players, coaches and clubs together
-        to build a stronger football community.
-    </p>
+    <h4 class="fw-bold text-success">Growing Football Talent in Wukari</h4>
+    <p class="text-muted mb-0">Bringing players, coaches and clubs together to build a stronger football community.</p>
 </div>
+
 {% endblock %}
