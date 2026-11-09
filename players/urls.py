@@ -35,3 +35,4 @@ urlpatterns = [
     # Logout
     path('logout/', views.logout_view, name='player_logout'),
 ]
+path('become-referee/', views.become_referee, name='become_referee'),
