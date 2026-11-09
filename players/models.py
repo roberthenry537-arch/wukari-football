@@ -6,6 +6,10 @@ from cloudinary.models import CloudinaryField
 
 # FILE UPLOAD SECURITY
 def validate_image_upload(file):
+    # Skip validation if it's already a Cloudinary resource (existing file)
+    if not hasattr(file, 'name') or not file.name:
+        return
+
     allowed_extensions = ['jpg', 'jpeg', 'png', 'webp']
     max_size = 5 * 1024 * 1024
 
@@ -14,11 +18,15 @@ def validate_image_upload(file):
     if extension not in allowed_extensions:
         raise ValidationError('Only JPG, JPEG, PNG and WEBP images are allowed.')
 
-    if file.size > max_size:
+    if hasattr(file, 'size') and file.size > max_size:
         raise ValidationError('Image size must not exceed 5 MB.')
 
 
 def validate_video_upload(file):
+    # Skip validation if it's already a Cloudinary resource (existing file)
+    if not hasattr(file, 'name') or not file.name:
+        return
+
     allowed_extensions = ['mp4', 'mov', 'webm']
     max_size = 50 * 1024 * 1024
 
@@ -27,7 +35,7 @@ def validate_video_upload(file):
     if extension not in allowed_extensions:
         raise ValidationError('Only MP4, MOV and WEBM videos are allowed.')
 
-    if file.size > max_size:
+    if hasattr(file, 'size') and file.size > max_size:
         raise ValidationError('Video size must not exceed 50 MB.')
 
 
