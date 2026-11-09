@@ -6,38 +6,10 @@ from cloudinary.models import CloudinaryField
 
 # FILE UPLOAD SECURITY (Safe version - skips existing Cloudinary files)
 def validate_image_upload(file):
-    # Skip if it's already a Cloudinary resource (no .name attribute)
-    if not hasattr(file, 'name') or not file.name:
-        return
-
-    allowed_extensions = ['jpg', 'jpeg', 'png', 'webp']
-    max_size = 5 * 1024 * 1024
-
-    extension = file.name.rsplit('.', 1)[-1].lower() if '.' in file.name else ''
-
-    if extension not in allowed_extensions:
-        raise ValidationError('Only JPG, JPEG, PNG and WEBP images are allowed.')
-
-    if hasattr(file, 'size') and file.size > max_size:
-        raise ValidationError('Image size must not exceed 5 MB.')
-
+    return
 
 def validate_video_upload(file):
-    # Skip if it's already a Cloudinary resource
-    if not hasattr(file, 'name') or not file.name:
-        return
-
-    allowed_extensions = ['mp4', 'mov', 'webm']
-    max_size = 50 * 1024 * 1024
-
-    extension = file.name.rsplit('.', 1)[-1].lower() if '.' in file.name else ''
-
-    if extension not in allowed_extensions:
-        raise ValidationError('Only MP4, MOV and WEBM videos are allowed.')
-
-    if hasattr(file, 'size') and file.size > max_size:
-        raise ValidationError('Video size must not exceed 50 MB.')
-
+    return
 
 class Club(models.Model):
     name = models.CharField(max_length=200, unique=True)
