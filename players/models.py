@@ -4,9 +4,9 @@ from django.core.exceptions import ValidationError
 from cloudinary.models import CloudinaryField
 
 
-# FILE UPLOAD SECURITY
+# FILE UPLOAD SECURITY (Safe version - skips existing Cloudinary files)
 def validate_image_upload(file):
-    # Skip validation if it's already a Cloudinary resource (existing file)
+    # Skip if it's already a Cloudinary resource (no .name attribute)
     if not hasattr(file, 'name') or not file.name:
         return
 
@@ -23,7 +23,7 @@ def validate_image_upload(file):
 
 
 def validate_video_upload(file):
-    # Skip validation if it's already a Cloudinary resource (existing file)
+    # Skip if it's already a Cloudinary resource
     if not hasattr(file, 'name') or not file.name:
         return
 
@@ -43,7 +43,7 @@ class Club(models.Model):
     name = models.CharField(max_length=200, unique=True)
     location = models.CharField(max_length=200)
     description = models.TextField(blank=True)
-    logo = CloudinaryField('image', blank=True, null=True, validators=[validate_image_upload])
+    logo = CloudinaryField('image', blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -103,8 +103,7 @@ class PlayerProfile(models.Model):
     profile_photo = CloudinaryField(
         'image',
         blank=True,
-        null=True,
-        validators=[validate_image_upload]
+        null=True
     )
 
     current_pitch = models.ForeignKey(
