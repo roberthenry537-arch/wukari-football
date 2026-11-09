@@ -34,5 +34,7 @@ urlpatterns = [
 
     # Logout
     path('logout/', views.logout_view, name='player_logout'),
+
+    # Become a Referee
+    path('become-referee/', views.become_referee, name='become_referee'),
 ]
-path('become-referee/', views.become_referee, name='become_referee'),
