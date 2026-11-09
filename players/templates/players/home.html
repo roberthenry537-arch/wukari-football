@@ -305,5 +305,23 @@
     <h4 class="fw-bold text-success">Growing Football Talent in Wukari</h4>
     <p class="text-muted mb-0">Bringing players, coaches and clubs together to build a stronger football community.</p>
 </div>
+<!-- Back to Top Button -->
+<button onclick="window.scrollTo({top: 0, behavior: 'smooth'});" 
+        id="backToTop" 
+        class="btn btn-success rounded-circle position-fixed shadow" 
+        style="bottom: 20px; right: 20px; width: 50px; height: 50px; display: none; z-index: 1000;">
+    ↑
+</button>
 
+<script>
+    // Show button when user scrolls down
+    window.onscroll = function() {
+        const btn = document.getElementById("backToTop");
+        if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
+            btn.style.display = "block";
+        } else {
+            btn.style.display = "none";
+        }
+    };
+</script>
 {% endblock %}
