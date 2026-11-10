@@ -379,3 +379,56 @@ def submit_squad(request, tournament_id):
 def tournament_list(request):
     tournaments = Tournament.objects.all().order_by('-start_date')
     return render(request, 'players/tournament_list.html', {'tournaments': tournaments})
+
+
+# TOURNAMENT SQUADS
+def tournament_squads(request, tournament_id):
+    tournament = get_object_or_404(Tournament, id=tournament_id)
+    squads = tournament.squads.all().select_related('club')
+    return render(request, 'players/tournament_squads.html', {
+        'tournament': tournament,
+        'squads': squads,
+    })
+
+
+# DOWNLOAD SQUAD PDF
+def download_squad(request, squad_id):
+    squad = get_object_or_404(Squad, id=squad_id)
+    players = squad.players.all().order_by('full_name')
+
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="{squad.club.name}_squad.pdf"'
+
+    p = canvas.Canvas(response, pagesize=A4)
+    width, height = A4
+
+    p.setFont("Helvetica-Bold", 16)
+    p.drawString(50, height - 50, f"{squad.club.name} - {squad.tournament.name}")
+
+    y = height - 100
+
+    for player in players:
+        if player.profile_photo:
+            try:
+                img_url = player.profile_photo.url
+                img_response = requests.get(img_url, timeout=5)
+                if img_response.status_code == 200:
+                    img = ImageReader(BytesIO(img_response.content))
+                    p.drawImage(img, 50, y - 60, width=50, height=50, mask='auto')
+            except Exception:
+                pass
+
+        p.setFont("Helvetica-Bold", 11)
+        p.drawString(110, y - 20, player.full_name)
+        p.setFont("Helvetica", 10)
+        p.drawString(110, y - 35, player.get_position_display())
+
+        y -= 70
+
+        if y < 100:
+            p.showPage()
+            y = height - 50
+
+    p.showPage()
+    p.save()
+    return response

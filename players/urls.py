@@ -41,4 +41,6 @@ urlpatterns = [
     path('club/<int:club_id>/download/', views.download_club_players, name='download_club_players'),
     path('tournament/<int:tournament_id>/submit-squad/', views.submit_squad, name='submit_squad'),
     path('tournaments/', views.tournament_list, name='tournament_list'),
+    path('tournament/<int:tournament_id>/squads/', views.tournament_squads, name='tournament_squads'),
+    path('squad/<int:squad_id>/download/', views.download_squad, name='download_squad'),
 ]
