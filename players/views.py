@@ -373,3 +373,9 @@ def submit_squad(request, tournament_id):
         'players': players,
         'squad': squad,
     })
+
+
+# TOURNAMENT LIST
+def tournament_list(request):
+    tournaments = Tournament.objects.all().order_by('-start_date')
+    return render(request, 'players/tournament_list.html', {'tournaments': tournaments})
