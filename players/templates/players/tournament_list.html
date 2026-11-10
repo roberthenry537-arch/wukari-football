@@ -14,11 +14,17 @@
                 <p>{{ tournament.description|truncatewords:20 }}</p>
                 {% endif %}
                 
-                {% if user.is_authenticated and user.playerprofile.club %}
-                <a href="{% url 'submit_squad' tournament.id %}" class="btn btn-success btn-sm">
-                    Submit Squad
-                </a>
-                {% endif %}
+                <div class="mt-3">
+                    {% if user.is_authenticated and user.playerprofile.club %}
+                    <a href="{% url 'submit_squad' tournament.id %}" class="btn btn-success btn-sm">
+                        Submit Squad
+                    </a>
+                    {% endif %}
+                    
+                    <a href="{% url 'tournament_squads' tournament.id %}" class="btn btn-outline-success btn-sm ms-2">
+                        View Squads
+                    </a>
+                </div>
             </div>
         </div>
     </div>
