@@ -23,6 +23,7 @@ from .models import (
     Referee,
     Tournament,
     Squad,
+    SiteSettings,
 )
 
 
@@ -207,8 +208,14 @@ def player_detail(request, player_id):
     return render(request, 'players/player_detail.html', {'player': player})
 
 
-# REGISTER
+# REGISTER (with registration open/close switch)
 def register(request):
+    settings = SiteSettings.objects.first()
+    if settings and not settings.registration_open:
+        return render(request, 'players/register.html', {
+            'registration_closed': True
+        })
+
     if request.user.is_authenticated:
         return redirect('home')
     if request.method == 'POST':

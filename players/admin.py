@@ -10,6 +10,7 @@ from .models import (
     PostComment,
     Tournament,
     Squad,
+    SiteSettings,
 )
 
 
@@ -35,3 +36,4 @@ admin.site.register(PostComment)
 admin.site.register(Referee)
 admin.site.register(Tournament)
 admin.site.register(Squad)
+admin.site.register(SiteSettings)

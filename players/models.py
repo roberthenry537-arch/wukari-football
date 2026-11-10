@@ -242,3 +242,12 @@ class Squad(models.Model):
 
     def __str__(self):
         return f"{self.club.name} - {self.tournament.name}"
+
+class SiteSettings(models.Model):
+    registration_open = models.BooleanField(default=True)
+
+    def __str__(self):
+        return "Site Settings"
+
+    class Meta:
+        verbose_name_plural = "Site Settings"
