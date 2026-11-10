@@ -12,9 +12,6 @@
             {% if club.logo %}
                 <img src="{{ club.logo.url }}"
                      alt="{{ club.name }} logo"
-                     <a href="{% url 'download_club_players' club.id %}" class="btn btn-success mb-3">
-    Download Player List
-</a>
                      class="img-fluid"
                      style="max-height: 200px; object-fit: contain;">
             {% else %}
@@ -39,6 +36,11 @@
                 {{ club.description|default:"No description available yet." }}
             </p>
 
+            <a href="{% url 'download_club_players' club.id %}" class="btn btn-success mb-3">
+                Download Player List
+            </a>
+
+            <br>
             <span class="badge bg-success">Football Club</span>
 
         </div>
