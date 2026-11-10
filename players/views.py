@@ -296,3 +296,30 @@ def become_referee(request):
 def referee_list(request):
     referees = Referee.objects.all().order_by('full_name')
     return render(request, 'players/referee_list.html', {'referees': referees})
+from django.http import HttpResponse
+from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import A4
+
+def download_club_players(request, club_id):
+    club = get_object_or_404(Club, id=club_id)
+    players = club.members.filter(role='PLAYER').order_by('full_name')
+
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="{club.name}_players.pdf"'
+
+    p = canvas.Canvas(response, pagesize=A4)
+    p.setFont("Helvetica-Bold", 16)
+    p.drawString(100, 800, f"{club.name} - Registered Players")
+
+    y = 760
+    p.setFont("Helvetica", 12)
+    for player in players:
+        p.drawString(100, y, f"{player.full_name} - {player.get_position_display()}")
+        y -= 20
+        if y < 50:
+            p.showPage()
+            y = 800
+
+    p.showPage()
+    p.save()
+    return response
