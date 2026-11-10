@@ -4,7 +4,6 @@ from django.core.exceptions import ValidationError
 from cloudinary.models import CloudinaryField
 
 
-# FILE UPLOAD SECURITY (Safe version - skips existing Cloudinary files)
 def validate_image_upload(file):
     return
 
@@ -73,11 +72,7 @@ class PlayerProfile(models.Model):
     state_of_origin = models.CharField(max_length=50, blank=True)
     bio = models.TextField(blank=True)
 
-    profile_photo = CloudinaryField(
-        'image',
-        blank=True,
-        null=True
-    )
+    profile_photo = CloudinaryField('image', blank=True, null=True)
 
     current_pitch = models.ForeignKey(
         Pitch,
@@ -223,3 +218,27 @@ class Referee(models.Model):
 
     def __str__(self):
         return self.full_name
+
+
+class Tournament(models.Model):
+    name = models.CharField(max_length=200)
+    start_date = models.DateField()
+    end_date = models.DateField(null=True, blank=True)
+    description = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.name
+
+
+class Squad(models.Model):
+    tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE, related_name='squads')
+    club = models.ForeignKey(Club, on_delete=models.CASCADE, related_name='squads')
+    players = models.ManyToManyField(PlayerProfile, related_name='squads')
+    submitted_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('tournament', 'club')
+
+    def __str__(self):
+        return f"{self.club.name} - {self.tournament.name}"

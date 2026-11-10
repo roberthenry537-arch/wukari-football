@@ -39,4 +39,5 @@ urlpatterns = [
     path('become-referee/', views.become_referee, name='become_referee'),
     path('referees/', views.referee_list, name='referee_list'),
     path('club/<int:club_id>/download/', views.download_club_players, name='download_club_players'),
+    path('tournament/<int:tournament_id>/submit-squad/', views.submit_squad, name='submit_squad'),
 ]

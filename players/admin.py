@@ -8,6 +8,8 @@ from .models import (
     Referee,
     PostLike,
     PostComment,
+    Tournament,
+    Squad,
 )
 
 
@@ -31,3 +33,5 @@ admin.site.register(Fixture)
 admin.site.register(PostLike)
 admin.site.register(PostComment)
 admin.site.register(Referee)
+admin.site.register(Tournament)
+admin.site.register(Squad)
