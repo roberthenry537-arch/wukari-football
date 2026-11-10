@@ -11,7 +11,6 @@ from reportlab.lib.pagesizes import A4
 from reportlab.lib.utils import ImageReader
 import requests
 from io import BytesIO
-from .models import Tournament, Squad
 
 from .models import (
     Pitch,
@@ -22,6 +21,8 @@ from .models import (
     Club,
     Fixture,
     Referee,
+    Tournament,
+    Squad,
 )
 
 
@@ -346,25 +347,24 @@ def download_club_players(request, club_id):
     p.showPage()
     p.save()
     return response
-    @login_required
+
+
+# SUBMIT SQUAD
+@login_required
 def submit_squad(request, tournament_id):
     tournament = get_object_or_404(Tournament, id=tournament_id)
     
-    # Get the user's club (if they have a profile)
     if not hasattr(request.user, 'playerprofile') or not request.user.playerprofile.club:
         return redirect('home')
     
     club = request.user.playerprofile.club
-    
-    # Check if squad already exists
     squad, created = Squad.objects.get_or_create(tournament=tournament, club=club)
     
     if request.method == 'POST':
         player_ids = request.POST.getlist('players')
         squad.players.set(player_ids)
-        return redirect('tournament_detail', tournament_id=tournament.id)
+        return redirect('home')
     
-    # Get players from the club
     players = club.members.filter(role='PLAYER')
     
     return render(request, 'players/submit_squad.html', {
