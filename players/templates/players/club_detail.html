@@ -27,10 +27,17 @@
 
             <h2 class="fw-bold">{{ club.name }}</h2>
 
-            <p class="text-muted mb-3">
+            <p class="text-muted mb-2">
                 <i class="bi bi-geo-alt-fill text-success"></i>
                 {{ club.location }}
             </p>
+
+            {% if club.email %}
+                <p class="mb-3">
+                    <strong>Email:</strong> 
+                    <a href="mailto:{{ club.email }}" class="text-success">{{ club.email }}</a>
+                </p>
+            {% endif %}
 
             <p>
                 {{ club.description|default:"No description available yet." }}

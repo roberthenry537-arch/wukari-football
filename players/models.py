@@ -16,11 +16,11 @@ class Club(models.Model):
     location = models.CharField(max_length=200)
     description = models.TextField(blank=True)
     logo = CloudinaryField('image', blank=True, null=True)
+    email = models.EmailField(blank=True, null=True)   # ← Add this line
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.name
-
 
 class Pitch(models.Model):
     name = models.CharField(max_length=200)
@@ -48,6 +48,7 @@ class PlayerProfile(models.Model):
         ('SCOUT', 'Scout'),
         ('TEAM_MANAGER', 'Team Manager'),
         ('PHYSIO', 'Physiotherapist'),
+        ('CLUB_CHAIRMAN', 'club chairman / proprietor'),
         ('ANALYST', 'Analyst'),
         ('OTHER', 'Other Staff'),
     ]
