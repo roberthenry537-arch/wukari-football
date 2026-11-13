@@ -61,126 +61,60 @@
                 Wukari Football
             </a>
 
-            <button class="navbar-toggler"
-                    type="button"
-                    data-bs-toggle="collapse"
-                    data-bs-target="#navbarNav">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
 
             <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'home' %}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'club_list' %}">Clubs</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'tournament_list' %}">Tournaments</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'fixture_list' %}">Fixtures</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'referee_list' %}">Referees</a>
+                    </li>
+                </ul>
+
                 <ul class="navbar-nav ms-auto align-items-lg-center">
-
-                    <!-- HOME -->
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'home' %}">
-                            Home
-                        </a>
-                    </li>
-
-                    <!-- CLUBS -->
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'club_list' %}">
-                            Clubs
-                        </a>
-                    </li>
-
-                    <!-- TOURNAMENTS -->
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'tournament_list' %}">
-                            Tournaments
-                        </a>
-                    </li>
-
-                    <!-- FIXTURES -->
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'fixture_list' %}">
-                            Fixtures
-                        </a>
-                    </li>
-
-                    <!-- REFEREES -->
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'referee_list' %}">
-                            Referees
-                        </a>
-                    </li>
-
-                    <!-- BECOME A REFEREE -->
                     {% if user.is_authenticated %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'become_referee' %}">
-                            Become a Referee
-                        </a>
-                    </li>
-                    {% endif %}
-
-                    {% if user.is_authenticated %}
-
-                        <li class="nav-item">
-                            <span class="nav-link text-white">
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
                                 Hello, {{ user.username }}
-                            </span>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                {% if user.playerprofile %}
+                                    <li><a class="dropdown-item" href="{% url 'player_detail' user.playerprofile.id %}">My Profile</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'edit_profile' %}">Edit Profile</a></li>
+                                {% else %}
+                                    <li><a class="dropdown-item" href="{% url 'create_profile' %}">Create Profile</a></li>
+                                {% endif %}
+                                <li><a class="dropdown-item" href="{% url 'become_referee' %}">Become a Referee</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <form method="POST" action="{% url 'player_logout' %}">
+                                        {% csrf_token %}
+                                        <button type="submit" class="dropdown-item">Logout</button>
+                                    </form>
+                                </li>
+                            </ul>
                         </li>
-
-                        {% if user.playerprofile %}
-
-                            <li class="nav-item">
-                                <a class="nav-link"
-                                   href="{% url 'player_detail' user.playerprofile.id %}">
-                                    My Profile
-                                </a>
-                            </li>
-
-                            <li class="nav-item">
-                                <a class="nav-link"
-                                   href="{% url 'edit_profile' %}">
-                                    Edit Profile
-                                </a>
-                            </li>
-
-                        {% else %}
-
-                            <li class="nav-item">
-                                <a class="nav-link"
-                                   href="{% url 'create_profile' %}">
-                                    Create Profile
-                                </a>
-                            </li>
-
-                        {% endif %}
-
-                        <!-- SECURE LOGOUT -->
-                        <li class="nav-item">
-                            <form method="POST"
-                                  action="{% url 'player_logout' %}"
-                                  class="d-inline">
-                                {% csrf_token %}
-                                <button type="submit"
-                                        class="nav-link btn btn-link text-white text-decoration-none">
-                                    Logout
-                                </button>
-                            </form>
-                        </li>
-
                     {% else %}
-
-                        <!-- LOGIN -->
                         <li class="nav-item">
-                            <a class="nav-link" href="{% url 'login' %}">
-                                Login
-                            </a>
+                            <a class="nav-link" href="{% url 'login' %}">Login</a>
                         </li>
-
-                        <!-- REGISTER -->
                         <li class="nav-item">
-                            <a class="nav-link" href="{% url 'register' %}">
-                                Register
-                            </a>
+                            <a class="nav-link" href="{% url 'register' %}">Register</a>
                         </li>
-
                     {% endif %}
-
                 </ul>
             </div>
         </div>
