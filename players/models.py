@@ -50,6 +50,7 @@ class PlayerProfile(models.Model):
         ('PHYSIO', 'Physiotherapist'),
         ('CLUB_CHAIRMAN', 'club chairman / proprietor'),
         ('ANALYST', 'Analyst'),
+        ('FAN', 'Fan / supporter'),
         ('OTHER', 'Other Staff'),
     ]
 

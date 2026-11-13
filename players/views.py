@@ -188,10 +188,12 @@ def club_detail(request, club_id):
     members = club.members.all().order_by('full_name')
     players = members.filter(role='PLAYER')
     coaches = members.exclude(role='PLAYER')
+    fans = members.filter(role='FAN')
     return render(request, 'players/club_detail.html', {
         'club': club,
         'players': players,
         'coaches': coaches,
+        'fans': fans,
     })
 
 

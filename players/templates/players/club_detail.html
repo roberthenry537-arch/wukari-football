@@ -187,7 +187,7 @@
     <!-- PLAYERS -->
     <h3 class="fw-bold mb-3">Club Players</h3>
 
-    <div class="row">
+    <div class="row mb-5">
 
         {% for player in players %}
 
@@ -236,6 +236,59 @@
         <div class="col-12">
             <div class="alert alert-info">
                 No players have been assigned to this club yet.
+            </div>
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+
+    <!-- FANS / SUPPORTERS -->
+    <h3 class="fw-bold mb-3">Fans & Supporters</h3>
+
+    <div class="row">
+
+        {% for fan in fans %}
+
+        <div class="col-md-6 col-lg-4 mb-3">
+
+            <div class="card h-100 shadow-sm border-0 rounded-3">
+
+                <div class="card-body text-center">
+
+                    {% if fan.profile_photo %}
+                        <img src="{{ fan.profile_photo.url }}"
+                             class="rounded-circle mb-3"
+                             alt="{{ fan.full_name }}"
+                             style="width: 85px; height: 85px; object-fit: cover;">
+                    {% else %}
+                        <div class="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center mx-auto mb-3"
+                             style="width: 85px; height: 85px;">
+                            <span>No Photo</span>
+                        </div>
+                    {% endif %}
+
+                    <h5 class="fw-bold">{{ fan.full_name }}</h5>
+
+                    <p class="text-muted">Fan / Supporter</p>
+
+                    <a href="{% url 'player_detail' fan.id %}"
+                       class="btn btn-outline-success btn-sm">
+                        View Profile
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        {% empty %}
+
+        <div class="col-12">
+            <div class="alert alert-info">
+                No fans have joined this club yet.
             </div>
         </div>
 
