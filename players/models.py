@@ -262,10 +262,49 @@ class MatchEvent(models.Model):
         ('ASSIST', 'Assist'),
     ]
 
-    fixture = models.ForeignKey(Fixture, on_delete=models.CASCADE, related_name='events')
-    player = models.ForeignKey(PlayerProfile, on_delete=models.CASCADE)
-    event_type = models.CharField(max_length=10, choices=EVENT_TYPES)
-    minute = models.PositiveIntegerField(null=True, blank=True)
+    fixture = models.ForeignKey(
+        Fixture,
+        on_delete=models.CASCADE,
+        related_name='events'
+    )
+
+    player = models.ForeignKey(
+        PlayerProfile,
+        on_delete=models.CASCADE,
+        related_name='match_events'
+    )
+
+    event_type = models.CharField(
+        max_length=10,
+        choices=EVENT_TYPES
+    )
+
+    minute = models.PositiveIntegerField(
+        null=True,
+        blank=True
+    )
+
+    assisted_by = models.ForeignKey(
+        PlayerProfile,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='goal_assists',
+        limit_choices_to={'role': 'PLAYER'}
+    )
+
+    def clean(self):
+        super().clean()
+
+        if self.event_type != 'GOAL' and self.assisted_by:
+            raise ValidationError(
+                "An assisting player can only be assigned to a goal."
+            )
+
+        if self.assisted_by and self.assisted_by == self.player:
+            raise ValidationError(
+                "A player cannot assist their own goal."
+            )
 
     def __str__(self):
         return f"{self.player.full_name} - {self.get_event_type_display()}"

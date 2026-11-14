@@ -139,9 +139,30 @@ def post_comment(request, post_id):
 
 # FIXTURES
 def fixture_list(request):
-    upcoming_fixtures = Fixture.objects.filter(status='UPCOMING').select_related('home_club', 'away_club')
-    completed_fixtures = Fixture.objects.filter(status='COMPLETED').select_related('home_club', 'away_club')
-    other_fixtures = Fixture.objects.filter(status__in=['POSTPONED', 'CANCELLED']).select_related('home_club', 'away_club')
+    upcoming_fixtures = Fixture.objects.filter(
+        status='UPCOMING'
+    ).select_related(
+        'home_club',
+        'away_club'
+    )
+
+    completed_fixtures = Fixture.objects.filter(
+        status='COMPLETED'
+    ).select_related(
+        'home_club',
+        'away_club'
+    ).prefetch_related(
+        'events__player',
+        'events__assisted_by'
+    )
+
+    other_fixtures = Fixture.objects.filter(
+        status__in=['POSTPONED', 'CANCELLED']
+    ).select_related(
+        'home_club',
+        'away_club'
+    )
+
     return render(request, 'players/fixture_list.html', {
         'upcoming_fixtures': upcoming_fixtures,
         'completed_fixtures': completed_fixtures,

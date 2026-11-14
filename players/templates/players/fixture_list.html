@@ -88,23 +88,66 @@
                             Full Time
                         </span>
 
+                        <!-- HOME TEAM -->
                         <h5 class="fw-bold">
                             {{ fixture.home_club.name }}
                         </h5>
 
-                        <h3 class="fw-bold text-success">
+                        <!-- MATCH SCORE -->
+                        <h3 class="fw-bold text-success mb-2">
                             {{ fixture.home_score }}
                             -
                             {{ fixture.away_score }}
-                            {% for event in fixture.events.all %}
-    {% if event.event_type == 'GOAL' %}
-        <span class="me-2">⚽ {{ event.player.full_name }}</span>
-    {% elif event.event_type == 'ASSIST' %}
-        <span class="me-2">👢 {{ event.player.full_name }}</span>
-    {% endif %}
-{% endfor %}
                         </h3>
 
+                        <!-- GOALSCORERS AND ASSISTS -->
+                        <div class="mt-2 mb-3 text-start mx-auto"
+                             style="max-width: 260px;">
+
+                            {% for event in fixture.events.all %}
+
+                                {% if event.event_type == 'GOAL' %}
+
+                                    <div class="mb-2">
+
+                                        <!-- GOALSCORER -->
+                                        <div class="text-muted"
+                                             style="font-size: 12px; font-weight: 400;">
+
+                                            <span>⚽</span>
+                                            {{ event.player.full_name }}
+
+                                            {% if event.minute %}
+                                                <span class="text-secondary">
+                                                    {{ event.minute }}'
+                                                </span>
+                                            {% endif %}
+
+                                        </div>
+
+                                        <!-- ASSISTING PLAYER -->
+                                        {% if event.assisted_by %}
+
+                                            <div class="text-muted ms-3"
+                                                 style="font-size: 11px; font-weight: 400;">
+
+                                                <span>👟</span>
+                                                Assisted by:
+                                                {{ event.assisted_by.full_name }}
+
+                                            </div>
+
+                                        {% endif %}
+
+                                    </div>
+
+                                {% endif %}
+
+                            {% endfor %}
+
+                        </div>
+
+                        <!-- AWAY TEAM -->
                         <h5 class="fw-bold">
                             {{ fixture.away_club.name }}
                         </h5>
