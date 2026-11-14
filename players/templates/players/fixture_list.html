@@ -96,6 +96,13 @@
                             {{ fixture.home_score }}
                             -
                             {{ fixture.away_score }}
+                            {% for event in fixture.events.all %}
+    {% if event.event_type == 'GOAL' %}
+        <span class="me-2">⚽ {{ event.player.full_name }}</span>
+    {% elif event.event_type == 'ASSIST' %}
+        <span class="me-2">👢 {{ event.player.full_name }}</span>
+    {% endif %}
+{% endfor %}
                         </h3>
 
                         <h5 class="fw-bold">

@@ -27,7 +27,15 @@ class ClubAdmin(admin.ModelAdmin):
     list_display = ('name', 'location', 'created_at')
     search_fields = ('name', 'location')
 
+from .models import MatchEvent
 
+@admin.register(MatchEvent)
+class MatchEventAdmin(admin.ModelAdmin):
+    list_display = ('fixture', 'player', 'event_type', 'minute')
+    list_filter = ('event_type', 'fixture')
+    search_fields = ('player__full_name',)
+
+    
 admin.site.register(PlayerProfile)
 admin.site.register(Post)
 admin.site.register(Fixture)

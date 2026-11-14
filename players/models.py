@@ -16,11 +16,12 @@ class Club(models.Model):
     location = models.CharField(max_length=200)
     description = models.TextField(blank=True)
     logo = CloudinaryField('image', blank=True, null=True)
-    email = models.EmailField(blank=True, null=True)   # ← Add this line
+    email = models.EmailField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.name
+
 
 class Pitch(models.Model):
     name = models.CharField(max_length=200)
@@ -48,9 +49,9 @@ class PlayerProfile(models.Model):
         ('SCOUT', 'Scout'),
         ('TEAM_MANAGER', 'Team Manager'),
         ('PHYSIO', 'Physiotherapist'),
-        ('CLUB_CHAIRMAN', 'club chairman / proprietor'),
+        ('CLUB_CHAIRMAN', 'Club Chairman / Proprietor'),
         ('ANALYST', 'Analyst'),
-        ('FAN', 'Fan / supporter'),
+        ('FAN', 'Fan / Supporter'),
         ('OTHER', 'Other Staff'),
     ]
 
@@ -73,7 +74,6 @@ class PlayerProfile(models.Model):
     religion = models.CharField(max_length=50, blank=True)
     state_of_origin = models.CharField(max_length=50, blank=True)
     bio = models.TextField(blank=True)
-
     profile_photo = CloudinaryField('image', blank=True, null=True)
 
     current_pitch = models.ForeignKey(
@@ -245,6 +245,7 @@ class Squad(models.Model):
     def __str__(self):
         return f"{self.club.name} - {self.tournament.name}"
 
+
 class SiteSettings(models.Model):
     registration_open = models.BooleanField(default=True)
 
@@ -253,3 +254,18 @@ class SiteSettings(models.Model):
 
     class Meta:
         verbose_name_plural = "Site Settings"
+
+
+class MatchEvent(models.Model):
+    EVENT_TYPES = [
+        ('GOAL', 'Goal'),
+        ('ASSIST', 'Assist'),
+    ]
+
+    fixture = models.ForeignKey(Fixture, on_delete=models.CASCADE, related_name='events')
+    player = models.ForeignKey(PlayerProfile, on_delete=models.CASCADE)
+    event_type = models.CharField(max_length=10, choices=EVENT_TYPES)
+    minute = models.PositiveIntegerField(null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.player.full_name} - {self.get_event_type_display()}"
