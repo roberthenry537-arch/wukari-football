@@ -33,29 +33,37 @@ class ClubAdmin(admin.ModelAdmin):
 class MatchEventAdmin(admin.ModelAdmin):
     list_display = (
         'fixture',
+        'team',
         'player',
         'event_type',
         'assisted_by',
         'minute',
     )
 
-    list_filter = ('event_type', 'fixture')
+    list_filter = (
+        'event_type',
+        'team',
+        'fixture',
+    )
 
     search_fields = (
         'player__full_name',
         'assisted_by__full_name',
+        'team__name',
         'fixture__home_club__name',
         'fixture__away_club__name',
     )
 
     list_select_related = (
         'fixture',
+        'team',
         'player',
         'assisted_by',
     )
 
     fields = (
         'fixture',
+        'team',
         'event_type',
         'player',
         'assisted_by',

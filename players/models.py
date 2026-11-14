@@ -7,6 +7,7 @@ from cloudinary.models import CloudinaryField
 def validate_image_upload(file):
     return
 
+
 def validate_video_upload(file):
     return
 
@@ -181,8 +182,16 @@ class Fixture(models.Model):
         ('CANCELLED', 'Cancelled'),
     ]
 
-    home_club = models.ForeignKey(Club, on_delete=models.CASCADE, related_name='home_fixtures')
-    away_club = models.ForeignKey(Club, on_delete=models.CASCADE, related_name='away_fixtures')
+    home_club = models.ForeignKey(
+        Club,
+        on_delete=models.CASCADE,
+        related_name='home_fixtures'
+    )
+    away_club = models.ForeignKey(
+        Club,
+        on_delete=models.CASCADE,
+        related_name='away_fixtures'
+    )
     match_date = models.DateField()
     match_time = models.TimeField()
     venue = models.CharField(max_length=200)
@@ -234,8 +243,16 @@ class Tournament(models.Model):
 
 
 class Squad(models.Model):
-    tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE, related_name='squads')
-    club = models.ForeignKey(Club, on_delete=models.CASCADE, related_name='squads')
+    tournament = models.ForeignKey(
+        Tournament,
+        on_delete=models.CASCADE,
+        related_name='squads'
+    )
+    club = models.ForeignKey(
+        Club,
+        on_delete=models.CASCADE,
+        related_name='squads'
+    )
     players = models.ManyToManyField(PlayerProfile, related_name='squads')
     submitted_at = models.DateTimeField(auto_now_add=True)
 
@@ -274,6 +291,16 @@ class MatchEvent(models.Model):
         related_name='match_events'
     )
 
+    # The club that scored the goal or recorded the event.
+    # Nullable so existing match events are preserved during migration.
+    team = models.ForeignKey(
+        Club,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='match_events'
+    )
+
     event_type = models.CharField(
         max_length=10,
         choices=EVENT_TYPES
@@ -296,15 +323,24 @@ class MatchEvent(models.Model):
     def clean(self):
         super().clean()
 
+        if self.team and self.fixture_id:
+            if self.team_id not in (
+                self.fixture.home_club_id,
+                self.fixture.away_club_id
+            ):
+                raise ValidationError({
+                    'team': 'Select either the home club or away club for this fixture.'
+                })
+
         if self.event_type != 'GOAL' and self.assisted_by:
-            raise ValidationError(
-                "An assisting player can only be assigned to a goal."
-            )
+            raise ValidationError({
+                'assisted_by': 'An assisting player can only be assigned to a goal.'
+            })
 
         if self.assisted_by and self.assisted_by == self.player:
-            raise ValidationError(
-                "A player cannot assist their own goal."
-            )
+            raise ValidationError({
+                'assisted_by': 'A player cannot assist their own goal.'
+            })
 
     def __str__(self):
         return f"{self.player.full_name} - {self.get_event_type_display()}"
