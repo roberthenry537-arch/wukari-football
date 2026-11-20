@@ -34,7 +34,8 @@ class PlayerProfileForm(forms.ModelForm):
         fields = [
             'full_name', 'role', 'age', 'position', 'preferred_foot',
             'height', 'phone_number', 'religion', 'state_of_origin',
-            'bio', 'current_pitch', 'club', 'goals_scored', 'appearances', 'profile_photo'
+            'bio', 'current_pitch', 'club', 'goals_scored', 'appearances',
+            'profile_photo'
         ]
 
 
@@ -55,6 +56,7 @@ class PostForm(forms.ModelForm):
                 self.add_error('image', 'Please upload a photo.')
             if video:
                 self.add_error('video', 'Remove the video from this photo post.')
+
         elif post_type == 'VIDEO':
             if not video:
                 self.add_error('video', 'Please upload a video.')
@@ -88,16 +90,22 @@ def home(request):
     total_clubs = Club.objects.count()
     total_pitches = Pitch.objects.count()
 
-    featured_players = PlayerProfile.objects.filter(role='PLAYER').order_by('-id')[:4]
+    featured_players = PlayerProfile.objects.filter(
+        role='PLAYER'
+    ).order_by('-id')[:4]
 
     upcoming_home_fixtures = Fixture.objects.filter(
         status='UPCOMING',
         match_date__gte=timezone.localdate()
-    ).select_related('home_club', 'away_club').order_by('match_date', 'match_time')[:4]
+    ).select_related(
+        'home_club', 'away_club'
+    ).order_by('match_date', 'match_time')[:4]
 
     recent_home_results = Fixture.objects.filter(
         status='COMPLETED'
-    ).select_related('home_club', 'away_club').order_by('-match_date', '-match_time')[:4]
+    ).select_related(
+        'home_club', 'away_club'
+    ).order_by('-match_date', '-match_time')[:4]
 
     return render(request, 'players/home.html', {
         'pitches': pitches,
@@ -118,11 +126,19 @@ def home(request):
 @require_POST
 def post_like(request, post_id):
     post = get_object_or_404(Post, id=post_id)
-    existing_like = PostLike.objects.filter(post=post, user=request.user)
+    existing_like = PostLike.objects.filter(
+        post=post,
+        user=request.user
+    )
+
     if existing_like.exists():
         existing_like.delete()
     else:
-        PostLike.objects.get_or_create(post=post, user=request.user)
+        PostLike.objects.get_or_create(
+            post=post,
+            user=request.user
+        )
+
     return redirect('home')
 
 
@@ -132,8 +148,14 @@ def post_like(request, post_id):
 def post_comment(request, post_id):
     post = get_object_or_404(Post, id=post_id)
     comment_text = request.POST.get('text', '').strip()
+
     if comment_text and len(comment_text) <= 1000:
-        PostComment.objects.create(post=post, user=request.user, text=comment_text)
+        PostComment.objects.create(
+            post=post,
+            user=request.user,
+            text=comment_text
+        )
+
     return redirect('home')
 
 
@@ -172,22 +194,33 @@ def fixture_list(request):
 
 # PLAYER SEARCH
 def player_search(request):
-    players = PlayerProfile.objects.filter(role='PLAYER').order_by('full_name')
+    players = PlayerProfile.objects.filter(
+        role='PLAYER'
+    ).order_by('full_name')
+
     search_query = request.GET.get('q', '').strip()
+
     if search_query:
-        players = players.filter(full_name__icontains=search_query)
+        players = players.filter(
+            full_name__icontains=search_query
+        )
+
     position = request.GET.get('position', '')
     if position:
         players = players.filter(position=position)
+
     foot = request.GET.get('foot', '')
     if foot:
         players = players.filter(preferred_foot__iexact=foot)
+
     min_age = request.GET.get('min_age', '')
     if min_age.isdigit():
         players = players.filter(age__gte=int(min_age))
+
     max_age = request.GET.get('max_age', '')
     if max_age.isdigit():
         players = players.filter(age__lte=int(max_age))
+
     return render(request, 'players/player_search.html', {
         'players': players,
         'search_query': search_query,
@@ -207,9 +240,11 @@ def club_list(request):
 def club_detail(request, club_id):
     club = get_object_or_404(Club, id=club_id)
     members = club.members.all().order_by('full_name')
+
     players = members.filter(role='PLAYER')
     coaches = members.exclude(role='PLAYER')
     fans = members.filter(role='FAN')
+
     return render(request, 'players/club_detail.html', {
         'club': club,
         'players': players,
@@ -222,18 +257,26 @@ def club_detail(request, club_id):
 def pitch_detail(request, pitch_id):
     pitch = get_object_or_404(Pitch, id=pitch_id)
     players = pitch.players.all()
-    return render(request, 'players/pitch_detail.html', {'pitch': pitch, 'players': players})
+
+    return render(request, 'players/pitch_detail.html', {
+        'pitch': pitch,
+        'players': players
+    })
 
 
 # PLAYER DETAIL
 def player_detail(request, player_id):
     player = get_object_or_404(PlayerProfile, id=player_id)
-    return render(request, 'players/player_detail.html', {'player': player})
+
+    return render(request, 'players/player_detail.html', {
+        'player': player
+    })
 
 
-# REGISTER (with registration open/close switch)
+# REGISTER
 def register(request):
     settings = SiteSettings.objects.first()
+
     if settings and not settings.registration_open:
         return render(request, 'players/register.html', {
             'registration_closed': True
@@ -241,15 +284,20 @@ def register(request):
 
     if request.user.is_authenticated:
         return redirect('home')
+
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
+
         if form.is_valid():
             user = form.save()
             login(request, user)
             return redirect('create_profile')
     else:
         form = UserCreationForm()
-    return render(request, 'players/register.html', {'form': form})
+
+    return render(request, 'players/register.html', {
+        'form': form
+    })
 
 
 # CREATE PROFILE
@@ -257,8 +305,10 @@ def register(request):
 def create_profile(request):
     if hasattr(request.user, 'playerprofile'):
         return redirect('edit_profile')
+
     if request.method == 'POST':
         form = PlayerProfileForm(request.POST, request.FILES)
+
         if form.is_valid():
             profile = form.save(commit=False)
             profile.user = request.user
@@ -266,21 +316,40 @@ def create_profile(request):
             return redirect('home')
     else:
         form = PlayerProfileForm()
-    return render(request, 'players/create_profile.html', {'form': form})
+
+    return render(request, 'players/create_profile.html', {
+        'form': form
+    })
 
 
 # EDIT PROFILE
 @login_required
 def edit_profile(request):
-    profile = get_object_or_404(PlayerProfile, user=request.user)
+    profile = get_object_or_404(
+        PlayerProfile,
+        user=request.user
+    )
+
     if request.method == 'POST':
-        form = PlayerProfileForm(request.POST, request.FILES, instance=profile)
+        form = PlayerProfileForm(
+            request.POST,
+            request.FILES,
+            instance=profile
+        )
+
         if form.is_valid():
             form.save()
-            return redirect('player_detail', player_id=profile.id)
+            return redirect(
+                'player_detail',
+                player_id=profile.id
+            )
     else:
         form = PlayerProfileForm(instance=profile)
-    return render(request, 'players/create_profile.html', {'form': form, 'editing': True})
+
+    return render(request, 'players/create_profile.html', {
+        'form': form,
+        'editing': True
+    })
 
 
 # CREATE POST
@@ -288,16 +357,25 @@ def edit_profile(request):
 def create_post(request):
     if not hasattr(request.user, 'playerprofile'):
         return redirect('create_profile')
+
     if request.method == 'POST':
         form = PostForm(request.POST, request.FILES)
+
         if form.is_valid():
             post = form.save(commit=False)
             post.author = request.user.playerprofile
             post.save()
-            return redirect('player_detail', player_id=request.user.playerprofile.id)
+
+            return redirect(
+                'player_detail',
+                player_id=request.user.playerprofile.id
+            )
     else:
         form = PostForm()
-    return render(request, 'players/create_post.html', {'form': form})
+
+    return render(request, 'players/create_post.html', {
+        'form': form
+    })
 
 
 # LOGOUT
@@ -308,19 +386,28 @@ def logout_view(request):
     return redirect('home')
 
 
-# REFEREE
+# REFEREE FORM
 class RefereeForm(forms.ModelForm):
     class Meta:
         model = Referee
-        fields = ['full_name', 'phone_number', 'level', 'bio', 'profile_photo']
+        fields = [
+            'full_name',
+            'phone_number',
+            'level',
+            'bio',
+            'profile_photo'
+        ]
 
 
+# BECOME REFEREE
 @login_required
 def become_referee(request):
     if hasattr(request.user, 'referee'):
         return redirect('home')
+
     if request.method == 'POST':
         form = RefereeForm(request.POST, request.FILES)
+
         if form.is_valid():
             referee = form.save(commit=False)
             referee.user = request.user
@@ -328,27 +415,42 @@ def become_referee(request):
             return redirect('home')
     else:
         form = RefereeForm()
-    return render(request, 'players/become_referee.html', {'form': form})
+
+    return render(request, 'players/become_referee.html', {
+        'form': form
+    })
 
 
+# REFEREE LIST
 def referee_list(request):
     referees = Referee.objects.all().order_by('full_name')
-    return render(request, 'players/referee_list.html', {'referees': referees})
+
+    return render(request, 'players/referee_list.html', {
+        'referees': referees
+    })
 
 
 # DOWNLOAD CLUB PLAYERS PDF
 def download_club_players(request, club_id):
     club = get_object_or_404(Club, id=club_id)
-    players = club.members.filter(role='PLAYER').order_by('full_name')
+    players = club.members.filter(
+        role='PLAYER'
+    ).order_by('full_name')
 
     response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = f'attachment; filename="{club.name}_players.pdf"'
+    response['Content-Disposition'] = (
+        f'attachment; filename="{club.name}_players.pdf"'
+    )
 
     p = canvas.Canvas(response, pagesize=A4)
     width, height = A4
 
     p.setFont("Helvetica-Bold", 16)
-    p.drawString(50, height - 50, f"{club.name} - Registered Players")
+    p.drawString(
+        50,
+        height - 50,
+        f"{club.name} - Registered Players"
+    )
 
     y = height - 100
 
@@ -357,16 +459,31 @@ def download_club_players(request, club_id):
             try:
                 img_url = player.profile_photo.url
                 img_response = requests.get(img_url, timeout=5)
+
                 if img_response.status_code == 200:
-                    img = ImageReader(BytesIO(img_response.content))
-                    p.drawImage(img, 50, y - 60, width=50, height=50, mask='auto')
+                    img = ImageReader(
+                        BytesIO(img_response.content)
+                    )
+                    p.drawImage(
+                        img,
+                        50,
+                        y - 60,
+                        width=50,
+                        height=50,
+                        mask='auto'
+                    )
             except Exception:
                 pass
 
         p.setFont("Helvetica-Bold", 11)
         p.drawString(110, y - 20, player.full_name)
+
         p.setFont("Helvetica", 10)
-        p.drawString(110, y - 35, player.get_position_display())
+        p.drawString(
+            110,
+            y - 35,
+            player.get_position_display()
+        )
 
         y -= 70
 
@@ -376,27 +493,38 @@ def download_club_players(request, club_id):
 
     p.showPage()
     p.save()
+
     return response
 
 
 # SUBMIT SQUAD
 @login_required
 def submit_squad(request, tournament_id):
-    tournament = get_object_or_404(Tournament, id=tournament_id)
-    
-    if not hasattr(request.user, 'playerprofile') or not request.user.playerprofile.club:
+    tournament = get_object_or_404(
+        Tournament,
+        id=tournament_id
+    )
+
+    if (
+        not hasattr(request.user, 'playerprofile')
+        or not request.user.playerprofile.club
+    ):
         return redirect('home')
-    
+
     club = request.user.playerprofile.club
-    squad, created = Squad.objects.get_or_create(tournament=tournament, club=club)
-    
+
+    squad, created = Squad.objects.get_or_create(
+        tournament=tournament,
+        club=club
+    )
+
     if request.method == 'POST':
         player_ids = request.POST.getlist('players')
         squad.players.set(player_ids)
         return redirect('home')
-    
+
     players = club.members.filter(role='PLAYER')
-    
+
     return render(request, 'players/submit_squad.html', {
         'tournament': tournament,
         'club': club,
@@ -408,13 +536,21 @@ def submit_squad(request, tournament_id):
 # TOURNAMENT LIST
 def tournament_list(request):
     tournaments = Tournament.objects.all().order_by('-start_date')
-    return render(request, 'players/tournament_list.html', {'tournaments': tournaments})
+
+    return render(request, 'players/tournament_list.html', {
+        'tournaments': tournaments
+    })
 
 
 # TOURNAMENT SQUADS
 def tournament_squads(request, tournament_id):
-    tournament = get_object_or_404(Tournament, id=tournament_id)
+    tournament = get_object_or_404(
+        Tournament,
+        id=tournament_id
+    )
+
     squads = tournament.squads.all().select_related('club')
+
     return render(request, 'players/tournament_squads.html', {
         'tournament': tournament,
         'squads': squads,
@@ -427,38 +563,52 @@ def download_squad(request, squad_id):
     players = squad.players.all().order_by('full_name')
 
     response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = f'attachment; filename="{squad.club.name}_squad.pdf"'
+    response['Content-Disposition'] = (
+        f'attachment; filename="{squad.club.name}_squad.pdf"'
+    )
 
     p = canvas.Canvas(response, pagesize=A4)
     width, height = A4
 
+    # Title
     p.setFont("Helvetica-Bold", 16)
-    p.drawString(50, height - 50, f"{squad.club.name} - {squad.tournament.name}")
+    p.drawString(
+        50,
+        height - 50,
+        f"{squad.club.name} - {squad.tournament.name}"
+    )
 
-    y = height - 100
+    p.setFont("Helvetica", 11)
+    p.drawString(
+        50,
+        height - 70,
+        f"Total Players: {players.count()}"
+    )
 
-    for player in players:
-        if player.profile_photo:
-            try:
-                img_url = player.profile_photo.url
-                img_response = requests.get(img_url, timeout=5)
-                if img_response.status_code == 200:
-                    img = ImageReader(BytesIO(img_response.content))
-                    p.drawImage(img, 50, y - 60, width=50, height=50, mask='auto')
-            except Exception:
-                pass
+    y = height - 110
 
+    for index, player in enumerate(players, start=1):
         p.setFont("Helvetica-Bold", 11)
-        p.drawString(110, y - 20, player.full_name)
+        p.drawString(
+            50,
+            y,
+            f"{index}. {player.full_name}"
+        )
+
         p.setFont("Helvetica", 10)
-        p.drawString(110, y - 35, player.get_position_display())
+        p.drawString(
+            50,
+            y - 15,
+            f"Position: {player.get_position_display()}"
+        )
 
-        y -= 70
+        y -= 45
 
-        if y < 100:
+        if y < 80:
             p.showPage()
             y = height - 50
 
     p.showPage()
     p.save()
+
     return response
