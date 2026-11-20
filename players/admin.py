@@ -39,13 +39,11 @@ class MatchEventAdmin(admin.ModelAdmin):
         'assisted_by',
         'minute',
     )
-
     list_filter = (
         'event_type',
         'team',
         'fixture',
     )
-
     search_fields = (
         'player__full_name',
         'assisted_by__full_name',
@@ -53,14 +51,12 @@ class MatchEventAdmin(admin.ModelAdmin):
         'fixture__home_club__name',
         'fixture__away_club__name',
     )
-
     list_select_related = (
         'fixture',
         'team',
         'player',
         'assisted_by',
     )
-
     fields = (
         'fixture',
         'team',
@@ -71,6 +67,36 @@ class MatchEventAdmin(admin.ModelAdmin):
     )
 
 
+@admin.register(Squad)
+class SquadAdmin(admin.ModelAdmin):
+    list_display = ('club', 'tournament', 'submitted_at', 'player_count')
+    list_filter = ('tournament', 'club')
+    search_fields = ('club__name', 'tournament__name')
+    filter_horizontal = ('players',)  # Makes adding/removing individual players easy
+
+    def player_count(self, obj):
+        return obj.players.count()
+    player_count.short_description = 'Players'
+
+    def formfield_for_manytomany(self, db_field, request, **kwargs):
+        if db_field.name == "players":
+            # When editing an existing squad, show only that club's players
+            object_id = request.resolver_match.kwargs.get('object_id') if request.resolver_match else None
+            if object_id:
+                try:
+                    squad = Squad.objects.get(pk=object_id)
+                    kwargs['queryset'] = PlayerProfile.objects.filter(
+                        club=squad.club,
+                        role='PLAYER'
+                    ).order_by('full_name')
+                except Squad.DoesNotExist:
+                    kwargs['queryset'] = PlayerProfile.objects.filter(role='PLAYER').order_by('full_name')
+            else:
+                # When creating a new squad, show all players (filter after selecting club)
+                kwargs['queryset'] = PlayerProfile.objects.filter(role='PLAYER').order_by('full_name')
+        return super().formfield_for_manytomany(db_field, request, **kwargs)
+
+
 admin.site.register(PlayerProfile)
 admin.site.register(Post)
 admin.site.register(Fixture)
@@ -78,5 +104,4 @@ admin.site.register(PostLike)
 admin.site.register(PostComment)
 admin.site.register(Referee)
 admin.site.register(Tournament)
-admin.site.register(Squad)
 admin.site.register(SiteSettings)
