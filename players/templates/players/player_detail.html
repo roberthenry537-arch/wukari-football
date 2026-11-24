@@ -3,90 +3,142 @@
 {% block content %}
 
 {% if player %}
-<div class="row">
-    <div class="col-md-4 text-center mb-4">
-        {% if player.profile_photo %}
-            <img src="{{ player.profile_photo.url }}" 
-                 class="img-fluid rounded shadow" 
-                 alt="{{ player.full_name }}"
-                 style="max-height: 320px; object-fit: cover; width: 100%;">
-        {% else %}
-            <div class="bg-secondary text-white d-flex align-items-center justify-content-center rounded shadow" 
-                 style="height: 320px;">
-                No Photo
-            </div>
-        {% endif %}
+<div class="container py-3">
 
-        {% if user.is_authenticated and user.playerprofile.id == player.id %}
-            <a href="{% url 'create_post' %}" class="btn btn-success mt-3 w-100">+ Create Post</a>
-            <a href="{% url 'edit_profile' %}" class="btn btn-outline-secondary mt-2 w-100">Edit Profile</a>
-        {% endif %}
-    </div>
-
-    <div class="col-md-8">
-        <div class="card shadow-sm border-0 mb-4">
-            <div class="card-body">
-                <h2 class="fw-bold mb-1">{{ player.full_name }}</h2>
-                <p class="text-muted mb-3">{{ player.get_role_display }}</p>
-
-                <div class="row mb-3">
-                    <div class="col-sm-6">
-                        <p class="mb-2"><strong>Position:</strong> {{ player.get_position_display }}</p>
-                        <p class="mb-2"><strong>Age:</strong> {{ player.age }}</p>
-                        <p class="mb-2"><strong>Phone:</strong> {{ player.phone_number|default:"—" }}</p>
-                        <p class="mb-2"><strong>Religion:</strong> {{ player.religion|default:"—" }}</p>
+    <!-- HEADER CARD -->
+    <div class="card border-0 shadow-sm mb-4 overflow-hidden">
+        <div class="row g-0">
+            <!-- Photo -->
+            <div class="col-md-4 bg-light text-center p-4">
+                {% if player.profile_photo %}
+                    <img src="{{ player.profile_photo.url }}" 
+                         class="img-fluid rounded-3 shadow-sm"
+                         alt="{{ player.full_name }}"
+                         style="max-height: 340px; width: 100%; object-fit: cover;">
+                {% else %}
+                    <div class="bg-secondary text-white d-flex align-items-center justify-content-center rounded-3"
+                         style="height: 340px;">
+                        No Photo
                     </div>
-                    <div class="col-sm-6">
-                        <p class="mb-2"><strong>State of Origin:</strong> {{ player.state_of_origin|default:"—" }}</p>
-                        <p class="mb-2"><strong>Preferred Foot:</strong> {{ player.preferred_foot|default:"—" }}</p>
-                        <p class="mb-2"><strong>Height:</strong> {{ player.height|default:"—" }}</p>
-                        <p class="mb-2"><strong>Pitch:</strong> 
-                            {% if player.current_pitch %}
-                                {{ player.current_pitch.name }}
-                            {% else %}
-                                Not set
-                            {% endif %}
-                        </p>
-                    </div>
-                </div>
-
-                {% if player.role == 'PLAYER' %}
-                <div class="mb-3">
-                    <span class="badge bg-success me-2">Goals: {{ player.goals_scored }}</span>
-                    <span class="badge bg-primary">Appearances: {{ player.appearances }}</span>
-                </div>
                 {% endif %}
 
-                <hr>
-                <h5>Bio</h5>
-                <p>{{ player.bio|default:"No bio yet." }}</p>
+                {% if user.is_authenticated and user.playerprofile.id == player.id %}
+                    <div class="d-grid gap-2 mt-3">
+                        <a href="{% url 'create_post' %}" class="btn btn-success btn-sm">+ Create Post</a>
+                        <a href="{% url 'edit_profile' %}" class="btn btn-outline-secondary btn-sm">Edit Profile</a>
+                    </div>
+                {% endif %}
             </div>
-        </div>
 
-        <!-- Posts Section -->
-        <h4 class="mb-3">Posts</h4>
-        {% for post in player.posts.all %}
-            <div class="card mb-3 shadow-sm">
-                <div class="card-body">
-                    {% if post.image %}
-                        <img src="{{ post.image.url }}" class="img-fluid rounded mb-2" alt="Post image">
+            <!-- Info -->
+            <div class="col-md-8">
+                <div class="card-body p-4">
+                    <div class="d-flex flex-wrap justify-content-between align-items-start mb-2">
+                        <div>
+                            <h2 class="fw-bold mb-1">{{ player.full_name }}</h2>
+                            <p class="text-muted mb-2">
+                                {{ player.get_role_display }}
+                                {% if player.club %}
+                                    · <a href="{% url 'club_detail' player.club.id %}" class="text-success text-decoration-none">{{ player.club.name }}</a>
+                                {% endif %}
+                            </p>
+                        </div>
+                        <span class="badge bg-success fs-6">{{ player.get_position_display }}</span>
+                    </div>
+
+                    <!-- Key Scout Info -->
+                    <div class="row g-3 mb-4">
+                        <div class="col-6 col-md-3">
+                            <div class="border rounded-3 p-3 text-center h-100">
+                                <small class="text-muted d-block">Age</small>
+                                <strong class="fs-5">{{ player.age }}</strong>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <div class="border rounded-3 p-3 text-center h-100">
+                                <small class="text-muted d-block">Preferred Foot</small>
+                                <strong class="fs-5">{{ player.preferred_foot|default:"—" }}</strong>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <div class="border rounded-3 p-3 text-center h-100">
+                                <small class="text-muted d-block">Height</small>
+                                <strong class="fs-5">{{ player.height|default:"—" }}</strong>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <div class="border rounded-3 p-3 text-center h-100">
+                                <small class="text-muted d-block">Appearances</small>
+                                <strong class="fs-5">{{ player.appearances }}</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    {% if player.role == 'PLAYER' %}
+                    <div class="mb-3">
+                        <span class="badge bg-success me-2 px-3 py-2">Goals: {{ player.goals_scored }}</span>
+                        <span class="badge bg-primary px-3 py-2">Appearances: {{ player.appearances }}</span>
+                    </div>
                     {% endif %}
-                    {% if post.video %}
-                        <video controls class="w-100 rounded mb-2">
-                            <source src="{{ post.video.url }}">
-                        </video>
+
+                    <hr>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p class="mb-2"><strong>State of Origin:</strong> {{ player.state_of_origin|default:"—" }}</p>
+                            <p class="mb-2"><strong>Religion:</strong> {{ player.religion|default:"—" }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p class="mb-2"><strong>Phone:</strong> {{ player.phone_number|default:"—" }}</p>
+                            <p class="mb-2"><strong>Pitch:</strong> 
+                                {% if player.current_pitch %}
+                                    {{ player.current_pitch.name }}
+                                {% else %}
+                                    Not set
+                                {% endif %}
+                            </p>
+                        </div>
+                    </div>
+
+                    {% if player.bio %}
+                    <hr>
+                    <h6 class="fw-bold">About</h6>
+                    <p class="mb-0">{{ player.bio }}</p>
                     {% endif %}
-                    <p class="mb-1">{{ post.caption }}</p>
-                    <small class="text-muted">{{ post.created_at|date:"M d, Y" }}</small>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- POSTS -->
+    <h4 class="fw-bold mb-3">Recent Posts</h4>
+    <div class="row">
+        {% for post in player.posts.all %}
+        <div class="col-md-6 col-lg-4 mb-3">
+            <div class="card h-100 shadow-sm border-0">
+                {% if post.image %}
+                    <img src="{{ post.image.url }}" class="card-img-top" alt="Post" style="height: 200px; object-fit: cover;">
+                {% elif post.video %}
+                    <video controls class="w-100" style="height: 200px; object-fit: cover;">
+                        <source src="{{ post.video.url }}">
+                    </video>
+                {% endif %}
+                <div class="card-body">
+                    <p class="mb-1">{{ post.caption|default:"" }}</p>
+                    <small class="text-muted">{{ post.created_at|date:"d M Y" }}</small>
+                </div>
+            </div>
+        </div>
         {% empty %}
-            <p class="text-muted">No posts yet.</p>
+        <div class="col-12">
+            <div class="alert alert-light border">No posts yet.</div>
+        </div>
         {% endfor %}
     </div>
-</div>
 
-<a href="{% url 'home' %}" class="btn btn-outline-secondary mt-4">← Back to Pitches</a>
+    <a href="{% url 'home' %}" class="btn btn-outline-secondary mt-4">← Back</a>
+
+</div>
 
 {% else %}
 <div class="alert alert-warning">Player not found.</div>
