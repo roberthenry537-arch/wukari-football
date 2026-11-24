@@ -559,56 +559,66 @@ def tournament_squads(request, tournament_id):
 
 # DOWNLOAD SQUAD PDF
 def download_squad(request, squad_id):
+    from django.http import HttpResponse
+    from reportlab.pdfgen import canvas
+    from reportlab.lib.pagesizes import A4
+    from reportlab.lib.utils import ImageReader
+    from io import BytesIO
+    from PIL import Image
+    import requests
+
     squad = get_object_or_404(Squad, id=squad_id)
     players = squad.players.all().order_by('full_name')
 
     response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = (
-        f'attachment; filename="{squad.club.name}_squad.pdf"'
-    )
+    response['Content-Disposition'] = f'attachment; filename="{squad.club.name}_squad.pdf"'
 
     p = canvas.Canvas(response, pagesize=A4)
     width, height = A4
 
     # Title
     p.setFont("Helvetica-Bold", 16)
-    p.drawString(
-        50,
-        height - 50,
-        f"{squad.club.name} - {squad.tournament.name}"
-    )
-
+    p.drawString(50, height - 45, f"{squad.club.name}")
     p.setFont("Helvetica", 11)
-    p.drawString(
-        50,
-        height - 70,
-        f"Total Players: {players.count()}"
-    )
+    p.drawString(50, height - 65, f"{squad.tournament.name}  |  Players: {players.count()}")
 
-    y = height - 110
+    y = height - 100
 
     for index, player in enumerate(players, start=1):
+        # Try to load a small safe photo
+        photo_drawn = False
+        if player.profile_photo:
+            try:
+                img_url = player.profile_photo.url
+                r = requests.get(img_url, timeout=6)
+                if r.status_code == 200:
+                    img = Image.open(BytesIO(r.content))
+                    img = img.convert("RGB")          # Make safe
+                    img.thumbnail((70, 70))            # Make small
+                    img_buffer = BytesIO()
+                    img.save(img_buffer, format="JPEG", quality=70)
+                    img_buffer.seek(0)
+
+                    p.drawImage(ImageReader(img_buffer), 50, y - 55, width=55, height=55)
+                    photo_drawn = True
+            except Exception:
+                pass   # If photo fails, just continue without it
+
+        # Text position depends on whether photo was drawn
+        text_x = 120 if photo_drawn else 50
+
         p.setFont("Helvetica-Bold", 11)
-        p.drawString(
-            50,
-            y,
-            f"{index}. {player.full_name}"
-        )
+        p.drawString(text_x, y - 15, f"{index}. {player.full_name}")
 
         p.setFont("Helvetica", 10)
-        p.drawString(
-            50,
-            y - 15,
-            f"Position: {player.get_position_display()}"
-        )
+        p.drawString(text_x, y - 32, f"Position: {player.get_position_display()}")
 
-        y -= 45
+        y -= 75
 
-        if y < 80:
+        if y < 90:
             p.showPage()
             y = height - 50
 
     p.showPage()
     p.save()
-
     return response
