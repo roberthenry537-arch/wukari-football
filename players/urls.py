@@ -43,4 +43,5 @@ urlpatterns = [
     path('tournaments/', views.tournament_list, name='tournament_list'),
     path('tournament/<int:tournament_id>/squads/', views.tournament_squads, name='tournament_squads'),
     path('squad/<int:squad_id>/download/', views.download_squad, name='download_squad'),
+    path('talent/', views.talent_showcase, name='talent_showcase'),
 ]

@@ -95,6 +95,10 @@ class PlayerProfile(models.Model):
 
     goals_scored = models.PositiveIntegerField(default=0)
     appearances = models.PositiveIntegerField(default=0)
+    is_featured = models.BooleanField(
+        default=False,
+        help_text="Show this player on the Talent Showcase page"
+    )
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -291,8 +295,6 @@ class MatchEvent(models.Model):
         related_name='match_events'
     )
 
-    # The club that scored the goal or recorded the event.
-    # Nullable so existing match events are preserved during migration.
     team = models.ForeignKey(
         Club,
         on_delete=models.SET_NULL,

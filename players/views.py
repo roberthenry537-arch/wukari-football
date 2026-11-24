@@ -622,3 +622,13 @@ def download_squad(request, squad_id):
     p.showPage()
     p.save()
     return response
+
+def talent_showcase(request):
+    players = PlayerProfile.objects.filter(
+        role='PLAYER',
+        is_featured=True
+    ).select_related('club').order_by('full_name')
+    
+    return render(request, 'players/talent_showcase.html', {
+        'players': players
+    })
