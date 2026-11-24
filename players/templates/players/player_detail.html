@@ -81,6 +81,18 @@
                     </div>
                     {% endif %}
 
+                    <!-- CONTACT BUTTON -->
+                    {% if player.club and player.club.email %}
+                        <a href="mailto:{{ player.club.email }}?subject=Inquiry about {{ player.full_name }} - Wukari Football Platform"
+                           class="btn btn-success mb-3">
+                            Contact Club about this Player
+                        </a>
+                    {% elif player.phone_number %}
+                        <a href="tel:{{ player.phone_number }}" class="btn btn-outline-success mb-3">
+                            Call Player
+                        </a>
+                    {% endif %}
+
                     <hr>
 
                     <div class="row">
